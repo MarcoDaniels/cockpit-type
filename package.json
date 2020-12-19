@@ -1,0 +1,18 @@
+{
+  "name": "cockpit-type",
+  "description": "Types generator for Cockpit CMS content",
+  "version": "0.0.1",
+  "license": "MIT",
+  "scripts": {
+    "start": "plop --plopfile './src/index.ts'"
+  },
+  "dependencies": {
+    "got": "11.8.1",
+    "plop": "2.7.4"
+  },
+  "devDependencies": {
+    "@types/node": "14.14.14",
+    "ts-node": "9.1.1",
+    "typescript": "4.1.3"
+  }
+}
