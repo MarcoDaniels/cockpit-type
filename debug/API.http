@@ -1,0 +1,6 @@
+### File containing usefull api requests for debug purposes
+### Requires environment
+
+### fetch schema for {{COCKPIT_COLLECTION}}
+GET {{COCKPIT_API_URL}}/collections/collection/{{COCKPIT_COLLECTION}}?token={{COCKPIT_API_TOKEN}}
+Accept: application/json
