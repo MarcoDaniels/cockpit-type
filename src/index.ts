@@ -1,4 +1,9 @@
 import {NodePlopAPI} from 'plop'
+import {collectionSchema} from "./client/client"
+
+export type Answers = {
+    collection: string
+}
 
 export default (plop: NodePlopAPI) => {
     plop.setGenerator(`generate`, {
@@ -11,11 +16,27 @@ export default (plop: NodePlopAPI) => {
             },
         ],
         actions: [
-            (answers) => {
-                console.log(answers)
+            {
+                type: 'add',
+                // TODO: can path be global
+                path: '../delete-me.ts',
+                templateFile: 'templates/TypeScript.ts',
+                force: true,
+                transform: async (template: string, data: Answers) => {
+                    const collection = await collectionSchema({id: data.collection})
 
-                return 'TODO: implement'
-            },
+                    const items = collection.fields.map(field => {
+                        return `${field.name}${field.required ? `` : `?`}: string`
+                    })
+
+                    const interfaceName = collection.label ?
+                        collection.label.replace(' ', '') : collection.name
+
+                    const result = `export interface ${interfaceName} { \n  ${items.join('\n  ')}\n}`
+
+                    return `${template}\n${result}`
+                }
+            }
         ],
     })
 
