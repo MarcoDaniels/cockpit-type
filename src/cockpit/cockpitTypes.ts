@@ -30,8 +30,13 @@ export interface CollectionLinkField extends BaseField {
 
 export type Field = AnyField | SelectField | CollectionLinkField
 
-export type Schema = {
+export type FieldSchema = {
     name: string
     label?: string
+    group?: string
     fields: Field[]
+}
+
+export type Schema = {
+    [key: string]: FieldSchema
 }

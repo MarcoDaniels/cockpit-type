@@ -2,7 +2,7 @@
 ### Requires environment
 
 ### fetch all collections
-GET {{COCKPIT_API_URL}}/collections/listCollections
+GET {{COCKPIT_API_URL}}/collections/listCollections/extended
 Cockpit-Token: {{COCKPIT_API_TOKEN}}
 Accept: application/json
 
@@ -11,7 +11,24 @@ GET {{COCKPIT_API_URL}}/collections/collection/{{COCKPIT_COLLECTION}}
 Cockpit-Token: {{COCKPIT_API_TOKEN}}
 Accept: application/json
 
+
 ### fetch data for {{COCKPIT_COLLECTION}}
 GET {{COCKPIT_API_URL}}/collections/get/{{COCKPIT_COLLECTION}}?populate=5
+Cockpit-Token: {{COCKPIT_API_TOKEN}}
+Accept: application/json
+
+
+### fetch all singletons
+GET {{COCKPIT_API_URL}}/singletons/listSingletons/extended
+Cockpit-Token: {{COCKPIT_API_TOKEN}}
+Accept: application/json
+
+### fetch schema for {{COCKPIT_SINGLETON}}
+GET {{COCKPIT_API_URL}}/singletons/singleton/{{COCKPIT_SINGLETON}}
+Cockpit-Token: {{COCKPIT_API_TOKEN}}
+Accept: application/json
+
+### fetch data for {{COCKPIT_SINGLETON}}
+GET {{COCKPIT_API_URL}}/singletons/get/{{COCKPIT_SINGLETON}}
 Cockpit-Token: {{COCKPIT_API_TOKEN}}
 Accept: application/json
