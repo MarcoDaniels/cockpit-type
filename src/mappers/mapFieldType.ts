@@ -1,4 +1,4 @@
-import {Field} from './cockpit/cockpitTypes'
+import {Field} from '../cockpit/cockpitTypes'
 
 export const mapFieldType = (field: Field) => {
     switch (field.type) {

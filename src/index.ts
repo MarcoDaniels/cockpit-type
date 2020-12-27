@@ -1,6 +1,8 @@
 import {NodePlopAPI} from 'plop'
 import {cockpitClient} from "./cockpit/cockpitClient"
-import {mapFieldType} from "./mapFieldType"
+import {mapTypeName} from "./mappers/mapTypeName"
+import {createType} from "./typescript/createType"
+import {createTypeField} from "./typescript/createTypeField"
 
 export type Answers = {
     collection: string
@@ -29,31 +31,31 @@ export default (plop: NodePlopAPI) => {
                 templateFile: 'templates/TypeScript.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
-                    const response = await cockpitClient.collections(answers.group)
+                    const response = await cockpitClient.collections()
+
                     switch (response.type) {
                         case "success":
-                            const result = response.data.map(collection => {
-                                const items = collection.fields.map(field => {
-                                    return `${field.name}${field.required ? `` : `?`}: ${mapFieldType(field)}`
+                            let output = ``
+
+                            response.data.map(schema => {
+                                const entryItems = schema.fields.map(createTypeField)
+
+                                const entryTypeName = mapTypeName(schema.label ?
+                                    schema.label.replace(' ', '') : schema.name)
+
+                                output += createType({
+                                    name: `${entryTypeName}Entry`,
+                                    fields: entryItems,
+                                    description: schema.description,
                                 })
 
-                                const interfaceName = collection.label ?
-                                    collection.label.replace(' ', '') : collection.name
-
-                                const result = [
-                                    `export type ${interfaceName}Entry = {`,
-                                    items.join(`\n`),
-                                    `}`,
-                                    ``,
-                                    `export type ${interfaceName} = {`,
-                                    `entries: ${interfaceName}Entry[]`,
-                                    `}`
-                                ]
-
-                                return result.join(`\n`)
+                                output += createType({
+                                    name: entryTypeName,
+                                    fields: [`entries: ${entryTypeName}Entry[]`]
+                                })
                             })
-                            // TODO: fix typings
-                            return `${template}\n${result.join(`\n`)}\n`
+
+                            return `${template}${output}`
                     }
                     // TODO: prettier on writing
                     return ''

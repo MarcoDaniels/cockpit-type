@@ -1,5 +1,6 @@
 interface BaseField {
     name: string
+    info?: string
     label?: string
     localize: boolean
     required: boolean
@@ -34,6 +35,7 @@ export type FieldSchema = {
     name: string
     label?: string
     group?: string
+    description?: string
     fields: Field[]
 }
 
