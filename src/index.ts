@@ -1,9 +1,10 @@
 import {NodePlopAPI} from 'plop'
-import {collectionSchema} from "./client/client"
+import {cockpitClient} from "./cockpit/cockpitClient"
 import {mapFieldType} from "./mapFieldType"
 
 export type Answers = {
     collection: string
+    group: string
 }
 
 export default (plop: NodePlopAPI) => {
@@ -15,6 +16,11 @@ export default (plop: NodePlopAPI) => {
                 name: 'collection',
                 message: 'Collection Name:',
             },
+            {
+                type: 'input',
+                name: 'group',
+                message: 'Group Name:',
+            },
         ],
         actions: [
             {
@@ -22,28 +28,35 @@ export default (plop: NodePlopAPI) => {
                 path: '../debug.ts', // TODO: can path be global
                 templateFile: 'templates/TypeScript.ts',
                 force: true,
-                transform: async (template: string, data: Answers) => {
-                    const collection = await collectionSchema({id: data.collection})
+                transform: async (template: string, answers: Answers) => {
+                    const response = await cockpitClient.collections(answers.group)
+                    switch (response.type) {
+                        case "success":
+                            const result = response.data.map(collection => {
+                                const items = collection.fields.map(field => {
+                                    return `${field.name}${field.required ? `` : `?`}: ${mapFieldType(field)}`
+                                })
 
-                    const items = collection.fields.map(field => {
-                        return `${field.name}${field.required ? `` : `?`}: ${mapFieldType(field)}`
-                    })
+                                const interfaceName = collection.label ?
+                                    collection.label.replace(' ', '') : collection.name
 
-                    const interfaceName = collection.label ?
-                        collection.label.replace(' ', '') : collection.name
+                                const result = [
+                                    `export type ${interfaceName}Entry = {`,
+                                    items.join(`\n`),
+                                    `}`,
+                                    ``,
+                                    `export type ${interfaceName} = {`,
+                                    `entries: ${interfaceName}Entry[]`,
+                                    `}`
+                                ]
 
-                    const result = [
-                        `export type ${interfaceName}Entry = {`,
-                        items.join(`\n`),
-                        `}`,
-                        ``,
-                        `export type ${interfaceName} = {`,
-                        `entries: ${interfaceName}Entry[]`,
-                        `}`
-                    ]
-
-                    // TODO: prettier after writing
-                    return `${template}\n${result.join(`\n`)}\n`
+                                return result.join(`\n`)
+                            })
+                            // TODO: fix typings
+                            return `${template}\n${result.join(`\n`)}\n`
+                    }
+                    // TODO: prettier on writing
+                    return ''
                 }
             }
         ],
