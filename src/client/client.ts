@@ -4,7 +4,10 @@ import {Schema} from "./clientTypes"
 
 const client: Got = got.extend({
     prefixUrl: config.cockpitAPIURL,
-    headers: {'Content-Type': 'application/json'},
+    headers: {
+        'Content-Type': 'application/json',
+        'Cockpit-Token': config.cockpitAPIToken,
+    },
     responseType: 'json',
     mutableDefaults: true,
 })
@@ -15,5 +18,5 @@ export type CollectionProps = {
 
 // TODO: handle errors .catch((err) => console.log(err))
 export const collectionSchema = ({id}: CollectionProps) =>
-    client.get<Schema>(`collections/collection/${id}?token=${config.cockpitAPIToken}`)
+    client.get<Schema>(`collections/collection/${id}`)
         .then((res) => res.body)
