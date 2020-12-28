@@ -1,17 +1,26 @@
-interface BaseField {
+type BaseField = {
     name: string
     info?: string
     label?: string
     localize: boolean
     required: boolean
-    options: any
 }
 
-export interface AnyField extends BaseField {
-    type: 'text' | 'boolean' | 'moderation' | 'markdown' | 'image' | 'code'
+export type AnyField = BaseField & {
+    type: 'text'
+        | 'markdown'
+        | 'code'
+        | 'boolean'
+        | 'moderation'
+        | 'file'
+        | 'asset'
+        | 'gallery'
+        | 'image'
+        | 'layout'
+        | 'layout-grid'
 }
 
-export interface SelectField extends BaseField {
+export type SelectField = BaseField & {
     type: 'select' | 'multipleselect'
     options: {
         options: string
@@ -19,7 +28,7 @@ export interface SelectField extends BaseField {
     }
 }
 
-export interface CollectionLinkField extends BaseField {
+export type CollectionLinkField = BaseField & {
     type: 'collectionlinkselect' | 'collectionlink'
     options: {
         link: string
@@ -29,7 +38,14 @@ export interface CollectionLinkField extends BaseField {
     }
 }
 
-export type Field = AnyField | SelectField | CollectionLinkField
+export type RepeaterField = BaseField & {
+    type: 'repeater'
+    options: {
+        fields: Field[]
+    }
+}
+
+export type Field = AnyField | SelectField | CollectionLinkField | RepeaterField
 
 export type FieldSchema = {
     name: string
