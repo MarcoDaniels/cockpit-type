@@ -1,6 +1,9 @@
 import {NodePlopAPI} from 'plop'
 import {cockpitClient} from "./cockpit/cockpitClient"
-import {mapFieldType} from "./mapFieldType"
+import {createType} from "./typescript/createType"
+import {createTypeName} from "./typescript/createTypeName"
+import {createTypeEntry} from "./typescript/createTypeEntry"
+import {cockpitFieldMap} from "./cockpit/cockpitFieldMap"
 
 export type Answers = {
     collection: string
@@ -26,34 +29,37 @@ export default (plop: NodePlopAPI) => {
             {
                 type: 'add',
                 path: '../debug.ts', // TODO: can path be global
-                templateFile: 'templates/TypeScript.ts',
+                templateFile: 'typescript/template.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
-                    const response = await cockpitClient.collections(answers.group)
+                    const response = await cockpitClient.collections('My Collection')
+
                     switch (response.type) {
                         case "success":
-                            const result = response.data.map(collection => {
-                                const items = collection.fields.map(field => {
-                                    return `${field.name}${field.required ? `` : `?`}: ${mapFieldType(field)}`
+                            response.data.map(schema => {
+                                const entryItems = schema.fields
+                                    .map(cockpitFieldMap)
+                                    .map(field => {
+                                        if (field.template) template += field.template
+                                        return createTypeEntry(field)
+                                    })
+
+                                const entryTypeName = createTypeName(schema.label ?
+                                    schema.label.replace(' ', '') : schema.name)
+
+                                template += createType({
+                                    name: entryTypeName,
+                                    fields: entryItems,
+                                    description: schema.description,
                                 })
 
-                                const interfaceName = collection.label ?
-                                    collection.label.replace(' ', '') : collection.name
-
-                                const result = [
-                                    `export type ${interfaceName}Entry = {`,
-                                    items.join(`\n`),
-                                    `}`,
-                                    ``,
-                                    `export type ${interfaceName} = {`,
-                                    `entries: ${interfaceName}Entry[]`,
-                                    `}`
-                                ]
-
-                                return result.join(`\n`)
+                                template += createType({
+                                    name: `${entryTypeName}Data`,
+                                    fields: [`entries: ${entryTypeName}[]`]
+                                })
                             })
-                            // TODO: fix typings
-                            return `${template}\n${result.join(`\n`)}\n`
+
+                            return template
                     }
                     // TODO: prettier on writing
                     return ''
