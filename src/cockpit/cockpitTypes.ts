@@ -16,8 +16,8 @@ export type AnyField = BaseField & {
         | 'asset'
         | 'gallery'
         | 'image'
-        | 'layout'
         | 'layout-grid'
+        | 'any-other' // just for ts to reach default
 }
 
 export type SelectField = BaseField & {
@@ -45,7 +45,24 @@ export type RepeaterField = BaseField & {
     }
 }
 
-export type Field = AnyField | SelectField | CollectionLinkField | RepeaterField
+export const layoutComponents = <const>[
+    'section', 'grid', 'text', 'image', 'html', 'heading', 'gallery', 'divider', 'button'
+]
+
+export type LayoutFieldComponents = typeof layoutComponents[number]
+
+export type LayoutField = BaseField & {
+    type: 'layout'
+    options: {
+        exclude: LayoutFieldComponents[]
+    }
+}
+
+export type Field = AnyField
+    | SelectField
+    | CollectionLinkField
+    | RepeaterField
+    | LayoutField
 
 export type FieldSchema = {
     name: string

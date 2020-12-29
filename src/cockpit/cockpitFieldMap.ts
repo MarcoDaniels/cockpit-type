@@ -1,5 +1,5 @@
-import {Field} from "./cockpitTypes"
-import {createUnion, createUnionMultiple, createUnionType} from "../typescript/createUnion"
+import {Field, layoutComponents} from "./cockpitTypes"
+import {createUnion, createUnionMultiple, createUnionType, createUnionTypeMultiple} from "../typescript/createUnion"
 import {createTypeName} from "../typescript/createTypeName"
 import {createType} from "../typescript/createType"
 import * as util from "util"
@@ -52,8 +52,40 @@ const fieldMap = (field: Field): FieldMap => {
                 value: createUnionType(fields.map(t => t.name)),
                 template: fields.map(t => t.type).join('')
             }
+        case "layout":
+            const components = layoutComponents
+                .filter(c => !field.options.exclude || !field.options.exclude.includes(c))
+                .map(c => {
+                    const data = () => {
+                        switch (c) {
+                            case "text":
+                                return {text: `string`}
+                            case "image":
+                                return {image: `ImageType`}
+                            default:
+                                return ''
+                        }
+                    }
+
+                    return {
+                        name: `${field.name}${createTypeName(c)}`,
+                        type: createType({
+                            name: `${field.name}${createTypeName(c)}`,
+                            fields: [
+                                `component: '${c}'`,
+                                // TODO: print out type
+                                `settings: ${util.inspect(data(), true, 5)}`
+                            ]
+                        })
+                    }
+                })
+
+            return {
+                value: createUnionTypeMultiple(components.map(t => t.name)),
+                template: components.map(t => t.type).join('')
+            }
         default:
-            return {value: `any // TODO: handle "${field.type}" type`}
+            return {value: `any // TODO: field type "${field.type}" is not being handled`}
     }
 }
 
