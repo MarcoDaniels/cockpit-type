@@ -32,7 +32,7 @@ export default (plop: NodePlopAPI) => {
                 templateFile: 'typescript/template.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
-                    const response = await cockpitClient.collections('My Collection')
+                    const response = await cockpitClient.collections(answers.group)
                     switch (response.type) {
                         case "success":
                             response.data.map(schema => {
