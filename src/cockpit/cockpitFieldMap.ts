@@ -1,7 +1,8 @@
 import {Field} from "./cockpitTypes"
-import {createUnion, createUnionMultiple} from "../typescript/createUnion"
+import {createUnion, createUnionMultiple, createUnionType} from "../typescript/createUnion"
 import {createTypeName} from "../typescript/createTypeName"
 import {createType} from "../typescript/createType"
+import * as util from "util"
 
 type FieldMap = {
     value: string
@@ -36,9 +37,20 @@ const fieldMap = (field: Field): FieldMap => {
         case "gallery":
             return {value: `GalleryType`}
         case "repeater":
+            const fields = field.options.fields.map(f => ({
+                name: `${field.name}${f.label}`,
+                type: createType({
+                    name: `${field.name}${f.label}`,
+                    fields: [
+                        `field: ${util.inspect(f)}`,
+                        `value: ${fieldMap(f).value}`,
+                    ]
+                })
+            }))
+
             return {
-                value: `Repeat // TODO: handle repeater`,
-                template: createType({name: 'Repeat', fields: ['key: string']})
+                value: createUnionType(fields.map(t => t.name)),
+                template: fields.map(t => t.type).join('')
             }
         default:
             return {value: `any // TODO: handle "${field.type}" type`}

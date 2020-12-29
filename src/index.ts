@@ -33,7 +33,6 @@ export default (plop: NodePlopAPI) => {
                 force: true,
                 transform: async (template: string, answers: Answers) => {
                     const response = await cockpitClient.collections('My Collection')
-
                     switch (response.type) {
                         case "success":
                             response.data.map(schema => {
