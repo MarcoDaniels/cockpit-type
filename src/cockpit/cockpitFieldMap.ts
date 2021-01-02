@@ -1,4 +1,5 @@
 import {Field, layoutComponents} from "./cockpitTypes"
+import {cockpitLayoutComponentMap, LayoutChildrenSuffix} from "./cockpitLayoutComponentMap"
 import {createUnion, createUnionMultiple, createUnionType, createUnionTypeMultiple} from "../typescript/createUnion"
 import {createTypeName} from "../typescript/createTypeName"
 import {createType} from "../typescript/createType"
@@ -53,36 +54,29 @@ const fieldMap = (field: Field): FieldMap => {
                 template: fields.map(t => t.type).join('')
             }
         case "layout":
+        case "layout-grid":
             const components = layoutComponents
                 .filter(c => !field.options.exclude || !field.options.exclude.includes(c))
-                .map(c => {
-                    const data = () => {
-                        switch (c) {
-                            case "text":
-                                return {text: `string`}
-                            case "image":
-                                return {image: `ImageType`}
-                            default:
-                                return ''
-                        }
-                    }
+                .map(component => ({
+                    name: `${field.name}${createTypeName(component)}`,
+                    type: createType({
+                        name: `${field.name}${createTypeName(component)}`,
+                        fields: [
+                            `component: '${component}'`,
+                            `${cockpitLayoutComponentMap({component, fieldName: field.name})}`
+                        ]
+                    })
 
-                    return {
-                        name: `${field.name}${createTypeName(c)}`,
-                        type: createType({
-                            name: `${field.name}${createTypeName(c)}`,
-                            fields: [
-                                `component: '${c}'`,
-                                // TODO: print out type
-                                `settings: ${util.inspect(data(), true, 5)}`
-                            ]
-                        })
-                    }
-                })
+                }))
+
+            const layoutChildrenType = createType({
+                name: `${field.name}${LayoutChildrenSuffix}`,
+                fields: [`children: ${createUnionTypeMultiple(components.map(t => t.name))}`]
+            })
 
             return {
                 value: createUnionTypeMultiple(components.map(t => t.name)),
-                template: components.map(t => t.type).join('')
+                template: `${layoutChildrenType}${components.map(t => t.type).join('')}`
             }
         default:
             return {value: `any // TODO: field type "${field.type}" is not being handled`}
