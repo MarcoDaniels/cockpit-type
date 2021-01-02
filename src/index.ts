@@ -16,6 +16,11 @@ export default (plop: NodePlopAPI) => {
         prompts: [
             {
                 type: 'input',
+                name: 'path',
+                message: 'Destination Path:',
+            },
+            {
+                type: 'input',
                 name: 'collection',
                 message: 'Collection Name:',
             },
@@ -28,7 +33,7 @@ export default (plop: NodePlopAPI) => {
         actions: [
             {
                 type: 'add',
-                path: '../debug.ts', // TODO: can path be global
+                path: '{{path}}',
                 templateFile: 'typescript/template.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
