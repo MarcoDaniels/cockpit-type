@@ -16,7 +16,6 @@ export type AnyField = BaseField & {
         | 'asset'
         | 'gallery'
         | 'image'
-        | 'layout-grid'
         | 'any-other' // just for ts to reach default
 }
 
@@ -52,7 +51,7 @@ export const layoutComponents = <const>[
 export type LayoutFieldComponents = typeof layoutComponents[number]
 
 export type LayoutField = BaseField & {
-    type: 'layout'
+    type: 'layout' | 'layout-grid'
     options: {
         exclude: LayoutFieldComponents[]
     }
