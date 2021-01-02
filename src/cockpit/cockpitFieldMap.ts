@@ -10,33 +10,35 @@ type FieldMap = {
     template?: string
 }
 
-// TODO: setup Maybe type with Nothing that is empty string ''
 const fieldMap = (field: Field): FieldMap => {
+    const withMaybeType = (type: string) =>
+        field.required ? `${type}` : `Maybe<${type}>`
+
     switch (field.type) {
         case 'text':
         case 'markdown':
         case 'code':
         case 'file':
-            return {value: `string`}
+            return {value: withMaybeType('string')}
         case 'boolean':
-            return {value: `boolean`}
+            return {value: withMaybeType('boolean')}
         case 'select':
-            return {value: createUnion(field.options.options.split(', '))}
+            return {value: withMaybeType(createUnion(field.options.options.split(', ')))}
         case 'multipleselect':
-            return {value: createUnionMultiple(field.options.options.split(', '))}
+            return {value: withMaybeType(createUnionMultiple(field.options.options.split(', ')))}
         case "collectionlink":
         case "collectionlinkselect":
             return {
-                value: `${createTypeName(field.options.link)}${field.options.multiple ? `[]` : ``}`
+                value: `${withMaybeType(createTypeName(field.options.link))}${field.options.multiple ? `[]` : ``}`
             }
         case "moderation":
-            return {value: createUnion(['Unpublished', 'Draft', 'Published'])}
+            return {value: withMaybeType(createUnion(['Unpublished', 'Draft', 'Published']))}
         case "asset":
-            return {value: `AssetType`}
+            return {value: withMaybeType(`AssetType`)}
         case "image":
-            return {value: `ImageType`}
+            return {value: withMaybeType(`ImageType`)}
         case "gallery":
-            return {value: `GalleryType`}
+            return {value: withMaybeType(`GalleryType[]`)}
         case "repeater":
             const fields = field.options.fields.map(f => ({
                 name: `${field.name}${f.label}`,
@@ -50,7 +52,7 @@ const fieldMap = (field: Field): FieldMap => {
             }))
 
             return {
-                value: createUnionType(fields.map(t => t.name)),
+                value: withMaybeType(createUnionType(fields.map(t => t.name))),
                 template: fields.map(t => t.type).join('')
             }
         case "layout":
@@ -75,7 +77,7 @@ const fieldMap = (field: Field): FieldMap => {
             })
 
             return {
-                value: createUnionTypeMultiple(components.map(t => t.name)),
+                value: withMaybeType(createUnionTypeMultiple(components.map(t => t.name))),
                 template: `${layoutChildrenType}${components.map(t => t.type).join('')}`
             }
         default:
@@ -83,7 +85,7 @@ const fieldMap = (field: Field): FieldMap => {
     }
 }
 
-type CockpitFieldMap = FieldMap & {
+export type CockpitFieldMap = FieldMap & {
     comment: string | null
     key: string
 }
