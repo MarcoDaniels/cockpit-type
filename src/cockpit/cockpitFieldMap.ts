@@ -46,7 +46,7 @@ const fieldMap = (field: Field): FieldMap => {
                     name: `${field.name}${f.label}`,
                     fields: [
                         `field: ${util.inspect(f)}`,
-                        `value: ${fieldMap(f).value}`,
+                        `value: ${fieldMap({...f, required: true}).value}`,
                     ]
                 })
             }))
