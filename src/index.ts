@@ -1,6 +1,7 @@
 import { NodePlopAPI } from 'plop'
 import { cockpitClient } from './cockpit/cockpitClient'
 import { schemaTemplate } from './typescript/schemaTemplate'
+import { format, resolveConfig } from 'prettier'
 
 export type Answers = {
     filterBy: 'collection' | 'group' | 'none'
@@ -57,7 +58,7 @@ export default (plop: NodePlopAPI) =>
                             if (collectionResponse.type === 'success')
                                 template += schemaTemplate(answers.prefix)(collectionResponse.data)
 
-                            return template
+                            return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
                         default:
                             const response = await cockpitClient.collections(answers.filter)
                             if (response.type === 'success')
@@ -65,7 +66,7 @@ export default (plop: NodePlopAPI) =>
                                     .map(schemaTemplate(answers.prefix))
                                     .map((schemaTemplate) => (template += schemaTemplate))
 
-                            return template
+                            return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
                     }
                 },
             },
