@@ -4,9 +4,9 @@ export type CreateType = {
     description?: string
 }
 
-export const createType = ({name, fields, description}: CreateType) => `
+export const createType = ({ name, fields, description }: CreateType) => `
 ${description ? `/** ${description} */` : ``}
 export type ${name} = {
-${fields.map(t => `    ${t}`).join(`\n`)}
+${fields.map((t) => `    ${t}`).join(`\n`)}
 }
 `

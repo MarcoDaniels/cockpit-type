@@ -1,6 +1,6 @@
-import {NodePlopAPI} from 'plop'
-import {cockpitClient} from "./cockpit/cockpitClient"
-import {schemaTemplate} from "./typescript/schemaTemplate"
+import { NodePlopAPI } from 'plop'
+import { cockpitClient } from './cockpit/cockpitClient'
+import { schemaTemplate } from './typescript/schemaTemplate'
 
 export type Answers = {
     filterBy: 'collection' | 'group' | 'none'
@@ -27,22 +27,22 @@ export default (plop: NodePlopAPI) =>
                 name: 'filterBy',
                 message: 'Filter by:',
                 choices: [
-                    {name: 'None', value: 'none'},
-                    {name: 'Collection', value: 'collection'},
-                    {name: 'Group', value: 'group'},
+                    { name: 'None', value: 'none' },
+                    { name: 'Collection', value: 'collection' },
+                    { name: 'Group', value: 'group' },
                 ],
             },
             {
                 type: 'input',
                 name: 'filter',
                 message: 'Filter Name:',
-                when: (answers: any) => answers.filterBy !== 'none'
+                when: (answers: any) => answers.filterBy !== 'none',
             },
             {
                 type: 'input',
                 name: 'prefix',
-                message: 'Prefix:'
-            }
+                message: 'Prefix:',
+            },
         ],
         actions: [
             {
@@ -52,7 +52,7 @@ export default (plop: NodePlopAPI) =>
                 force: true,
                 transform: async (template: string, answers: Answers) => {
                     switch (answers.filterBy) {
-                        case "collection":
+                        case 'collection':
                             const collectionResponse = await cockpitClient.collectionSchema(answers.filter)
                             if (collectionResponse.type === 'success')
                                 template += schemaTemplate(answers.prefix)(collectionResponse.data)
@@ -61,11 +61,13 @@ export default (plop: NodePlopAPI) =>
                         default:
                             const response = await cockpitClient.collections(answers.filter)
                             if (response.type === 'success')
-                                response.data.map(schemaTemplate(answers.prefix)).map(schemaTemplate => template += schemaTemplate)
+                                response.data
+                                    .map(schemaTemplate(answers.prefix))
+                                    .map((schemaTemplate) => (template += schemaTemplate))
 
                             return template
                     }
-                }
-            }
-        ]
+                },
+            },
+        ],
     })

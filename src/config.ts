@@ -1,4 +1,4 @@
-import {config as dotenvConfig} from 'dotenv'
+import { config as dotenvConfig } from 'dotenv'
 
 dotenvConfig()
 
@@ -8,11 +8,7 @@ export type ConfigType = {
     cockpitAPIModerationToken: string
 }
 
-if (
-    !process.env.COCKPIT_API_URL ||
-    !process.env.COCKPIT_API_TOKEN ||
-    !process.env.COCKPIT_API_MODERATION_TOKEN
-) {
+if (!process.env.COCKPIT_API_URL || !process.env.COCKPIT_API_TOKEN || !process.env.COCKPIT_API_MODERATION_TOKEN) {
     console.log(`💥 environment configuration missing, check .env file`)
     process.exit(1)
 }
@@ -20,5 +16,5 @@ if (
 export const config: ConfigType = {
     cockpitAPIURL: process.env.COCKPIT_API_URL,
     cockpitAPIToken: process.env.COCKPIT_API_TOKEN,
-    cockpitAPIModerationToken: process.env.COCKPIT_API_MODERATION_TOKEN
+    cockpitAPIModerationToken: process.env.COCKPIT_API_MODERATION_TOKEN,
 }

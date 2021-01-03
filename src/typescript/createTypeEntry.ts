@@ -5,5 +5,9 @@ export type CreateTypeEntry = {
 }
 
 export const createTypeEntry = (field: CreateTypeEntry) =>
-    `${field.comment ? `/** ${field.comment} */
-    ` : ``}${field.key}: ${field.value}`
+    `${
+        field.comment
+            ? `/** ${field.comment} */
+    `
+            : ``
+    }${field.key}: ${field.value}`

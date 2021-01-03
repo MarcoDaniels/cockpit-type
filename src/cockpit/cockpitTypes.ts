@@ -7,16 +7,7 @@ type BaseField = {
 }
 
 export type AnyField = BaseField & {
-    type: 'text'
-        | 'markdown'
-        | 'code'
-        | 'boolean'
-        | 'moderation'
-        | 'file'
-        | 'asset'
-        | 'gallery'
-        | 'image'
-        | 'any-other' // just for ts to reach default
+    type: 'text' | 'markdown' | 'code' | 'boolean' | 'moderation' | 'file' | 'asset' | 'gallery' | 'image' | 'any-other' // just for ts to reach default
 }
 
 export type SelectField = BaseField & {
@@ -45,7 +36,15 @@ export type RepeaterField = BaseField & {
 }
 
 export const layoutComponents = <const>[
-    'section', 'grid', 'text', 'image', 'html', 'heading', 'gallery', 'divider', 'button'
+    'section',
+    'grid',
+    'text',
+    'image',
+    'html',
+    'heading',
+    'gallery',
+    'divider',
+    'button',
 ]
 
 export type LayoutFieldComponents = typeof layoutComponents[number]
@@ -57,11 +56,7 @@ export type LayoutField = BaseField & {
     }
 }
 
-export type Field = AnyField
-    | SelectField
-    | CollectionLinkField
-    | RepeaterField
-    | LayoutField
+export type Field = AnyField | SelectField | CollectionLinkField | RepeaterField | LayoutField
 
 export type FieldSchema = {
     name: string
