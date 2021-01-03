@@ -1,33 +1,41 @@
 import {NodePlopAPI} from 'plop'
 import {cockpitClient} from "./cockpit/cockpitClient"
-import {createType} from "./typescript/createType"
-import {createTypeName} from "./typescript/createTypeName"
-import {createTypeEntry} from "./typescript/createTypeEntry"
-import {cockpitFieldMap} from "./cockpit/cockpitFieldMap"
+import {schemaTemplate} from "./typescript/schemaTemplate"
 
 export type Answers = {
-    collection: string
-    group: string
+    filterBy: 'collection' | 'group' | 'none'
+    filter: string
 }
 
-export default (plop: NodePlopAPI) => {
+export default (plop: NodePlopAPI) =>
     plop.setGenerator(`generate`, {
         description: 'Generates types for Cockpit',
         prompts: [
             {
                 type: 'input',
                 name: 'path',
-                message: 'Destination Path:',
+                message: 'Destination File:',
+                validate: (path: string) => {
+                    if (/(.*\.(?:d.ts|ts))/i.test(path)) return true
+
+                    return 'Please provide a valid TypeScript file path'
+                },
+            },
+            {
+                type: 'list',
+                name: 'filterBy',
+                message: 'Filter by:',
+                choices: [
+                    {name: 'None', value: 'none'},
+                    {name: 'Collection', value: 'collection'},
+                    {name: 'Group', value: 'group'},
+                ],
             },
             {
                 type: 'input',
-                name: 'collection',
-                message: 'Collection Name:',
-            },
-            {
-                type: 'input',
-                name: 'group',
-                message: 'Group Name:',
+                name: 'filter',
+                message: 'Filter Name:',
+                when: (answers: any) => answers.filterBy !== 'none'
             },
         ],
         actions: [
@@ -37,39 +45,22 @@ export default (plop: NodePlopAPI) => {
                 templateFile: 'typescript/template.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
-                    const response = await cockpitClient.collections(answers.group)
-                    switch (response.type) {
-                        case "success":
-                            response.data.map(schema => {
-                                const entryItems = schema.fields
-                                    .map(cockpitFieldMap)
-                                    .map(field => {
-                                        if (field.template) template += field.template
-                                        return createTypeEntry(field)
-                                    })
+                    switch (answers.filterBy) {
+                        case "collection":
+                            const collectionResponse = await cockpitClient.collectionSchema(answers.filter)
+                            if (collectionResponse.type === 'success')
+                                template += schemaTemplate(collectionResponse.data)
 
-                                const entryTypeName = createTypeName(schema.label ?
-                                    schema.label.replace(' ', '') : schema.name)
-
-                                template += createType({
-                                    name: entryTypeName,
-                                    fields: entryItems,
-                                    description: schema.description,
-                                })
-
-                                template += createType({
-                                    name: `${entryTypeName}Data`,
-                                    fields: [`entries: ${entryTypeName}[]`]
-                                })
-                            })
+                            return template
+                        default:
+                            const response = await cockpitClient.collections(answers.filter)
+                            if (response.type === 'success')
+                                response.data.map(schemaTemplate).map(schemaTemplate => template += schemaTemplate)
 
                             return template
                     }
-                    // TODO: prettier on writing
-                    return ''
                 }
             }
-        ],
+        ]
     })
 
-}
