@@ -4,22 +4,22 @@ import {createTypeEntry} from "./createTypeEntry"
 import {createTypeName} from "./createTypeName"
 import {createType} from "./createType"
 
-export const schemaTemplate = (schema: FieldSchema) => {
+export const schemaTemplate = (prefix?: string) => (schema: FieldSchema) => {
     let template = ''
 
     const entryItems = schema.fields
-        .map(cockpitFieldMap)
+        .map(cockpitFieldMap(prefix))
         .map(field => {
             if (field.template) template += field.template
             return createTypeEntry(field)
         })
 
-    const entryTypeName = createTypeName(schema.label ?
-        schema.label.replace(' ', '') : schema.name)
+    const entryTypeName = `${prefix}${createTypeName(schema.label ?
+        schema.label.replace(' ', '') : schema.name)}`
 
     // create main entry type
     template += createType({
-        name: entryTypeName,
+        name: `${entryTypeName}`,
         fields: entryItems,
         description: schema.description,
     })

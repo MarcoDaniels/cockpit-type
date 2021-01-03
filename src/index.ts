@@ -5,6 +5,7 @@ import {schemaTemplate} from "./typescript/schemaTemplate"
 export type Answers = {
     filterBy: 'collection' | 'group' | 'none'
     filter: string
+    prefix?: string
 }
 
 export default (plop: NodePlopAPI) =>
@@ -37,25 +38,30 @@ export default (plop: NodePlopAPI) =>
                 message: 'Filter Name:',
                 when: (answers: any) => answers.filterBy !== 'none'
             },
+            {
+                type: 'input',
+                name: 'prefix',
+                message: 'Prefix:'
+            }
         ],
         actions: [
             {
                 type: 'add',
                 path: '{{path}}',
-                templateFile: 'typescript/template.ts',
+                templateFile: 'template/typescript.hbs',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
                     switch (answers.filterBy) {
                         case "collection":
                             const collectionResponse = await cockpitClient.collectionSchema(answers.filter)
                             if (collectionResponse.type === 'success')
-                                template += schemaTemplate(collectionResponse.data)
+                                template += schemaTemplate(answers.prefix)(collectionResponse.data)
 
                             return template
                         default:
                             const response = await cockpitClient.collections(answers.filter)
                             if (response.type === 'success')
-                                response.data.map(schemaTemplate).map(schemaTemplate => template += schemaTemplate)
+                                response.data.map(schemaTemplate(answers.prefix)).map(schemaTemplate => template += schemaTemplate)
 
                             return template
                     }
@@ -63,4 +69,3 @@ export default (plop: NodePlopAPI) =>
             }
         ]
     })
-
