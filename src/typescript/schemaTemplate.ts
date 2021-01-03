@@ -1,21 +1,18 @@
-import {FieldSchema} from "../cockpit/cockpitTypes"
-import {cockpitFieldMap} from "../cockpit/cockpitFieldMap"
-import {createTypeEntry} from "./createTypeEntry"
-import {createTypeName} from "./createTypeName"
-import {createType} from "./createType"
+import { FieldSchema } from '../cockpit/cockpitTypes'
+import { cockpitFieldMap } from '../cockpit/cockpitFieldMap'
+import { createTypeEntry } from './createTypeEntry'
+import { createTypeName } from './createTypeName'
+import { createType } from './createType'
 
 export const schemaTemplate = (prefix?: string) => (schema: FieldSchema) => {
     let template = ''
 
-    const entryItems = schema.fields
-        .map(cockpitFieldMap(prefix))
-        .map(field => {
-            if (field.template) template += field.template
-            return createTypeEntry(field)
-        })
+    const entryItems = schema.fields.map(cockpitFieldMap(prefix)).map((field) => {
+        if (field.template) template += field.template
+        return createTypeEntry(field)
+    })
 
-    const entryTypeName = `${prefix}${createTypeName(schema.label ?
-        schema.label.replace(' ', '') : schema.name)}`
+    const entryTypeName = `${prefix}${createTypeName(schema.label ? schema.label.replace(' ', '') : schema.name)}`
 
     // create main entry type
     template += createType({
@@ -27,7 +24,7 @@ export const schemaTemplate = (prefix?: string) => (schema: FieldSchema) => {
     // create main entry type data
     template += createType({
         name: `${entryTypeName}Data`,
-        fields: [`entries: ${entryTypeName}[]`]
+        fields: [`entries: ${entryTypeName}[]`],
     })
 
     return template
