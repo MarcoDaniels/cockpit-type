@@ -10,9 +10,9 @@ type FieldMap = {
     template?: string
 }
 
-const fieldMap = (field: Field): FieldMap => {
+const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
     const withMaybeType = (type: string) =>
-        field.required ? `${type}` : `Maybe<${type}>`
+        field.required ? `${type}` : `${prefix}MaybeType<${type}>`
 
     switch (field.type) {
         case 'text':
@@ -29,16 +29,16 @@ const fieldMap = (field: Field): FieldMap => {
         case "collectionlink":
         case "collectionlinkselect":
             return {
-                value: `${withMaybeType(createTypeName(field.options.link))}${field.options.multiple ? `[]` : ``}`
+                value: `${withMaybeType(`${prefix}${createTypeName(field.options.link)}`)}${field.options.multiple ? `[]` : ``}`
             }
         case "moderation":
             return {value: withMaybeType(createUnion(['Unpublished', 'Draft', 'Published']))}
         case "asset":
-            return {value: withMaybeType(`AssetType`)}
+            return {value: withMaybeType(`${prefix}AssetType`)}
         case "image":
-            return {value: withMaybeType(`ImageType`)}
+            return {value: withMaybeType(`${prefix}ImageType`)}
         case "gallery":
-            return {value: withMaybeType(`GalleryType[]`)}
+            return {value: withMaybeType(`${prefix}GalleryType[]`)}
         case "repeater":
             const fields = field.options.fields.map(f => ({
                 name: `${field.name}${f.label}`,
@@ -46,7 +46,7 @@ const fieldMap = (field: Field): FieldMap => {
                     name: `${field.name}${f.label}`,
                     fields: [
                         `field: ${util.inspect(f)}`,
-                        `value: ${fieldMap({...f, required: true}).value}`,
+                        `value: ${fieldMap(prefix)({...f, required: true}).value}`,
                     ]
                 })
             }))
@@ -57,22 +57,24 @@ const fieldMap = (field: Field): FieldMap => {
             }
         case "layout":
         case "layout-grid":
+            const fieldName = createTypeName(field.name)
+
             const components = layoutComponents
                 .filter(c => !field.options.exclude || !field.options.exclude.includes(c))
                 .map(component => ({
-                    name: `${field.name}${createTypeName(component)}`,
+                    name: `${prefix}${fieldName}${createTypeName(component)}`,
                     type: createType({
-                        name: `${field.name}${createTypeName(component)}`,
+                        name: `${prefix}${fieldName}${createTypeName(component)}`,
                         fields: [
                             `component: '${component}'`,
-                            `${cockpitLayoutComponentMap({component, fieldName: field.name})}`
+                            `${cockpitLayoutComponentMap({component, fieldName, prefix})}`
                         ]
                     })
 
                 }))
 
             const layoutChildrenType = createType({
-                name: `${field.name}${LayoutChildrenSuffix}`,
+                name: `${prefix}${fieldName}${LayoutChildrenSuffix}`,
                 fields: [`children: ${createUnionTypeMultiple(components.map(t => t.name))}`]
             })
 
@@ -90,8 +92,8 @@ export type CockpitFieldMap = FieldMap & {
     key: string
 }
 
-export const cockpitFieldMap = (field: Field): CockpitFieldMap => ({
+export const cockpitFieldMap = (prefix?: string) => (field: Field): CockpitFieldMap => ({
     comment: field.info || null,
     key: `${field.name}${field.required ? `` : `?`}`,
-    ...fieldMap(field)
+    ...fieldMap(prefix)(field)
 })
