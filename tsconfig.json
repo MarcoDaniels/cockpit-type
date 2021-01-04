@@ -1,19 +1,22 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
+    "rootDir": "src",
+    "outDir": "dist",
     "target": "es5",
     "module": "commonjs",
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
     "alwaysStrict": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "composite": true,
     "declaration": true,
-    "declarationMap": true,
-    "outDir": "dist",
-    "rootDir": ".",
-    "baseUrl": "."
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "coverage",
+    "dist"
+  ]
 }
