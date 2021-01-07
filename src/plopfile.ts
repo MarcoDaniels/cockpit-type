@@ -24,6 +24,11 @@ export default (plop: NodePlopAPI) =>
                 },
             },
             {
+                type: 'input',
+                name: 'prefix',
+                message: 'Type Prefix:',
+            },
+            {
                 type: 'list',
                 name: 'filterBy',
                 message: 'Filter by:',
@@ -39,16 +44,11 @@ export default (plop: NodePlopAPI) =>
                 message: 'Filter Name:',
                 when: (answers: any) => answers.filterBy !== 'none',
             },
-            {
-                type: 'input',
-                name: 'prefix',
-                message: 'Prefix:',
-            },
         ],
         actions: [
             {
                 type: 'add',
-                path: '{{path}}',
+                path: `${process.cwd()}/{{path}}`,
                 templateFile: 'template/typescript.hbs',
                 force: true,
                 transform: async (template: string, answers: Answers) => {

@@ -11,7 +11,8 @@
   "scripts": {
     "clean": "rimraf dist/",
     "copy:template": "copyfiles -u 1 src/template/*.hbs dist",
-    "build": "yarn clean && tsc && yarn copy:template",
+    "build:exec": "chmod +x dist/index.js",
+    "build": "yarn clean && tsc && yarn copy:template && yarn build:exec",
     "generate:build": "node dist/index.js",
     "generate": "plop --plopfile './src/index.ts'"
   },
