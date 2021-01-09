@@ -1,33 +1,33 @@
 {
-  "name": "cockpit-type",
-  "description": "Types generator for Cockpit CMS content",
-  "version": "0.0.1",
-  "license": "MIT",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "bin": {
-    "cockpit-type": "./dist/index.js"
-  },
-  "scripts": {
-    "clean": "rimraf dist/",
-    "copy:template": "copyfiles -u 1 src/template/*.hbs dist",
-    "build:exec": "chmod +x dist/index.js",
-    "build": "yarn clean && tsc && yarn copy:template && yarn build:exec",
-    "generate:build": "node dist/index.js",
-    "generate": "plop --plopfile './src/plopfile.ts'"
-  },
-  "dependencies": {
-    "dotenv": "8.2.0",
-    "got": "11.8.1",
-    "plop": "2.7.4",
-    "prettier": "2.2.1"
-  },
-  "devDependencies": {
-    "@types/node": "14.14.14",
-    "@types/prettier": "2.1.6",
-    "copyfiles": "2.4.1",
-    "rimraf": "3.0.2",
-    "ts-node": "9.1.1",
-    "typescript": "4.1.3"
-  }
+    "name": "cockpit-type",
+    "description": "Types generator for Cockpit CMS content",
+    "version": "0.0.1",
+    "license": "MIT",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "bin": {
+        "cockpit-type": "./dist/index.js"
+    },
+    "scripts": {
+        "clean": "rimraf dist/",
+        "copy:template": "copyfiles -u 1 src/template/*.hbs dist",
+        "build:exec": "chmod +x dist/index.js",
+        "build": "yarn clean && tsc && yarn copy:template && yarn build:exec",
+        "generate:build": "node dist/index.js",
+        "generate": "plop --plopfile './src/plopfile.ts'"
+    },
+    "dependencies": {
+        "dotenv": "8.2.0",
+        "got": "11.8.1",
+        "plop": "2.7.4",
+        "prettier": "2.2.1"
+    },
+    "devDependencies": {
+        "@types/node": "14.14.14",
+        "@types/prettier": "2.1.6",
+        "copyfiles": "2.4.1",
+        "rimraf": "3.0.2",
+        "ts-node": "9.1.1",
+        "typescript": "4.1.3"
+    }
 }
