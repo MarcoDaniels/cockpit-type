@@ -1,8 +1,8 @@
 import { NodePlopAPI } from 'plop'
 import { cockpitClient } from './cockpit/cockpitClient'
 import { schemaTemplate } from './typescript/schemaTemplate'
-import { format, resolveConfig } from 'prettier'
 import { filterBy, filterByReg } from './utils/filterBy'
+import { formatPrettier } from './utils/formatPrettier'
 
 export type Answers = {
     filter: string
@@ -55,7 +55,7 @@ export default (plop: NodePlopAPI) =>
                                 if (collectionResponse.type === 'success')
                                     template += schemaTemplate(answers.prefix)(collectionResponse.data)
 
-                                return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                                return formatPrettier(template)
                             default:
                                 const response = await cockpitClient.collections()
                                 if (response.type === 'success')
@@ -63,17 +63,17 @@ export default (plop: NodePlopAPI) =>
                                         .map(schemaTemplate(answers.prefix))
                                         .map((schemaTemplate) => (template += schemaTemplate))
 
-                                return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                                return formatPrettier(template)
                         }
                     }
 
-                    const response = await cockpitClient.collections(answers.filter)
+                    const response = await cockpitClient.collections()
                     if (response.type === 'success')
                         response.data
                             .map(schemaTemplate(answers.prefix))
                             .map((schemaTemplate) => (template += schemaTemplate))
 
-                    return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                    return formatPrettier(template)
                 },
             },
         ],
