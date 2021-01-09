@@ -23,7 +23,7 @@ const baseClient: Got = got.extend({
                     let errorMessage = `${options.method} cockpit-type`
 
                     if (response) {
-                        console.error(`${options.url.pathname}`)
+                        console.error(`Error fetching: ${options.url.pathname}`)
                         errorMessage += ` ${response.statusCode} - ${response.statusMessage}`
                     }
 
