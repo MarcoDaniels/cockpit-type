@@ -1,5 +1,5 @@
 import got, { Got } from 'got'
-import { config } from '../config'
+import { config } from '../utils/config'
 import { FieldSchema, Schema } from './cockpitTypes'
 
 const baseClient: Got = got.extend({

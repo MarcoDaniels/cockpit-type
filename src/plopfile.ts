@@ -2,9 +2,9 @@ import { NodePlopAPI } from 'plop'
 import { cockpitClient } from './cockpit/cockpitClient'
 import { schemaTemplate } from './typescript/schemaTemplate'
 import { format, resolveConfig } from 'prettier'
+import { filterBy, filterByReg } from './utils/filterBy'
 
 export type Answers = {
-    filterBy: 'collection' | 'group' | 'none'
     filter: string
     prefix?: string
 }
@@ -26,23 +26,17 @@ export default (plop: NodePlopAPI) =>
             {
                 type: 'input',
                 name: 'prefix',
-                message: 'Type Prefix:',
-            },
-            {
-                type: 'list',
-                name: 'filterBy',
-                message: 'Filter by:',
-                choices: [
-                    { name: 'None', value: 'none' },
-                    { name: 'Collection', value: 'collection' },
-                    { name: 'Group', value: 'group' },
-                ],
+                message: 'Prefix all your types with:',
             },
             {
                 type: 'input',
                 name: 'filter',
-                message: 'Filter Name:',
-                when: (answers: any) => answers.filterBy !== 'none',
+                message: 'Filter Types by (filterItem=filterName):',
+                validate: (filter: string) => {
+                    if (!filter || filterByReg.test(filter)) return true
+
+                    return 'Please provide one of the following filterItem (collection|singleton|group)'
+                },
             },
         ],
         actions: [
@@ -52,22 +46,34 @@ export default (plop: NodePlopAPI) =>
                 templateFile: 'template/typescript.hbs',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
-                    switch (answers.filterBy) {
-                        case 'collection':
-                            const collectionResponse = await cockpitClient.collectionSchema(answers.filter)
-                            if (collectionResponse.type === 'success')
-                                template += schemaTemplate(answers.prefix)(collectionResponse.data)
+                    // TODO: make response generic
+                    const filters = filterBy(answers.filter)
+                    if (filters) {
+                        switch (filters.filterBy) {
+                            case 'collection':
+                                const collectionResponse = await cockpitClient.collectionSchema(filters.filterName)
+                                if (collectionResponse.type === 'success')
+                                    template += schemaTemplate(answers.prefix)(collectionResponse.data)
 
-                            return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
-                        default:
-                            const response = await cockpitClient.collections(answers.filter)
-                            if (response.type === 'success')
-                                response.data
-                                    .map(schemaTemplate(answers.prefix))
-                                    .map((schemaTemplate) => (template += schemaTemplate))
+                                return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                            default:
+                                const response = await cockpitClient.collections()
+                                if (response.type === 'success')
+                                    response.data
+                                        .map(schemaTemplate(answers.prefix))
+                                        .map((schemaTemplate) => (template += schemaTemplate))
 
-                            return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                                return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
+                        }
                     }
+
+                    const response = await cockpitClient.collections(answers.filter)
+                    if (response.type === 'success')
+                        response.data
+                            .map(schemaTemplate(answers.prefix))
+                            .map((schemaTemplate) => (template += schemaTemplate))
+
+                    return format(template, { parser: 'babel-ts', ...resolveConfig.sync(`.prettierrc`) })
                 },
             },
         ],
