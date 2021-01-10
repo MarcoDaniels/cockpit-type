@@ -1,7 +1,12 @@
-import { format } from 'prettier'
+import { format, resolveConfig } from 'prettier'
 
-export const formatPrettier = (input: string) =>
-    format(input, {
+export const formatPrettier = async (input: string) => {
+    const prettierConfig = await resolveConfig(process.cwd())
+    if (prettierConfig) {
+        return format(input, { parser: 'babel-ts', ...prettierConfig })
+    }
+
+    return format(input, {
         parser: 'babel-ts',
         semi: false,
         trailingComma: 'all',
@@ -10,3 +15,4 @@ export const formatPrettier = (input: string) =>
         tabWidth: 4,
         arrowParens: 'always',
     })
+}
