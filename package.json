@@ -1,8 +1,13 @@
 {
     "name": "cockpit-type",
-    "description": "Types generator for Cockpit CMS content",
+    "description": "Typings generator for your Cockpit CMS content",
+    "author": "Marco Daniel Martins <marcodanielmartins@gmail.com>",
     "version": "0.0.1",
     "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MarcoDaniels/cockpit-type.git"
+    },
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "bin": {
