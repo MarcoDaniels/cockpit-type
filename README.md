@@ -1,5 +1,8 @@
 # cockpit-type
 
+[![GitHub release](https://img.shields.io/github/v/release/marcodaniels/cockpit-type?include_prereleases)](https://www.npmjs.com/package/cockpit-type)
+[![Publish](https://github.com/marcodaniels/cockpit-type/workflows/On%20Publish/badge.svg)](https://github.com/MarcoDaniels/cockpit-type/releases)
+
 > Typings generator for your [Cockpit CMS](https://getcockpit.com/) content model.
 
 ## Usage
