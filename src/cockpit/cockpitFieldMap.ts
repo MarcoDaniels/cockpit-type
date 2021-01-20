@@ -11,45 +11,41 @@ type FieldMap = {
 }
 
 const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
-    const withMaybeType = (type: string) => (field.required ? `${type}` : `${prefix}MaybeType<${type}>`)
-
     switch (field.type) {
         case 'text':
         case 'markdown':
         case 'code':
         case 'file':
-            return { value: withMaybeType('string') }
+            return { value: `string` }
         case 'boolean':
-            return { value: withMaybeType('boolean') }
+            return { value: `boolean` }
         case 'select':
             switch (typeof field.options.options) {
                 case 'object':
-                    return { value: withMaybeType(createUnion(field.options.options.map((t) => t.value))) }
+                    return { value: createUnion(field.options.options.map((t) => t.value)) }
                 default:
-                    return { value: withMaybeType(createUnion(field.options.options.split(', '))) }
+                    return { value: createUnion(field.options.options.split(', ')) }
             }
         case 'multipleselect':
             switch (typeof field.options.options) {
                 case 'object':
-                    return { value: withMaybeType(createUnionMultiple(field.options.options.map((t) => t.value))) }
+                    return { value: createUnionMultiple(field.options.options.map((t) => t.value)) }
                 default:
-                    return { value: withMaybeType(createUnionMultiple(field.options.options.split(', '))) }
+                    return { value: createUnionMultiple(field.options.options.split(', ')) }
             }
         case 'collectionlink':
         case 'collectionlinkselect':
             return {
-                value: `${withMaybeType(`${prefix}${createTypeName(field.options.link)}`)}${
-                    field.options.multiple ? `[]` : ``
-                }`,
+                value: `${prefix}${createTypeName(field.options.link)}${field.options.multiple ? `[]` : ``}`,
             }
         case 'moderation':
-            return { value: withMaybeType(createUnion(['Unpublished', 'Draft', 'Published'])) }
+            return { value: createUnion(['Unpublished', 'Draft', 'Published']) }
         case 'asset':
-            return { value: withMaybeType(`${prefix}AssetType`) }
+            return { value: `AssetType` }
         case 'image':
-            return { value: withMaybeType(`${prefix}ImageType`) }
+            return { value: `ImageType` }
         case 'gallery':
-            return { value: withMaybeType(`${prefix}GalleryType[]`) }
+            return { value: `GalleryType[]` }
         case 'repeater':
             const fields = field.options.fields.map((f) => ({
                 name: `${field.name}${f.label}`,
@@ -60,7 +56,7 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
             }))
 
             return {
-                value: withMaybeType(createUnionTypeMultiple(fields.map((t) => t.name))),
+                value: createUnionTypeMultiple(fields.map((t) => t.name)),
                 template: fields.map((t) => t.type).join(''),
             }
         case 'layout':
@@ -86,7 +82,7 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
             })
 
             return {
-                value: withMaybeType(createUnionTypeMultiple(components.map((t) => t.name))),
+                value: createUnionTypeMultiple(components.map((t) => t.name)),
                 template: `${layoutChildrenType}${components.map((t) => t.type).join('')}`,
             }
         default:

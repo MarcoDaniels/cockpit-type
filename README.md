@@ -9,21 +9,18 @@
 
 `cockpit-type` uses [plopjs](https://plopjs.com/documentation) therefore all prompts and CLI usage are extended from it.
 
-```
-# install
-yarn add -D cockpit-type
+### Add it to your project
 
-# use it as script
-cockpit-type <destinationFile> <typePrefix> <filterOptions>
-```
+`yarn add -D cockpit-type` or `npm install --save-dev cockpit-type`
 
-run `cockpit-type` command without options, and the interactive CLI will kick in.
+### Use it as script (see [CLI Options](#CLI-options))
 
-## Command line options
+`cockpit-type <options>` or `cockpit-type` without options, and the interactive CLI will prompt the options.
 
-```
-path          Destination file
-prefix        Prefix for the types
-filter        Filter option ex: 'group=My Groups'
-              allowed filters: 'collection', 'singleton' or 'group'
-```
+## CLI options
+
+|Option|Type|Description|
+|---|:---:|---|
+|path|string|Destination file|
+|prefix|string|Prefix for the types|
+|filter|string|Filter option ex: 'group=My Groups' allowed filters: 'collection', 'singleton' or 'group'|
