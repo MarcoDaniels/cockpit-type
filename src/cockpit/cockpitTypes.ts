@@ -10,10 +10,16 @@ export type AnyField = BaseField & {
     type: 'text' | 'markdown' | 'code' | 'boolean' | 'moderation' | 'file' | 'asset' | 'gallery' | 'image' | 'any-other' // just for ts to reach default
 }
 
+export type SelectFieldOptions = {
+    value: string
+    label: string
+    group?: string
+}
+
 export type SelectField = BaseField & {
     type: 'select' | 'multipleselect'
     options: {
-        options: string
+        options: string | SelectFieldOptions[]
         default?: string
     }
 }
