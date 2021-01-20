@@ -43,7 +43,7 @@ export default (plop: NodePlopAPI) =>
             {
                 type: 'add',
                 path: `${process.cwd()}/{{path}}`,
-                templateFile: 'template/typescript.hbs',
+                templateFile: 'template/typescript.ts',
                 force: true,
                 transform: async (template: string, answers: Answers) => {
                     const filters = filterBy(answers.filter)
