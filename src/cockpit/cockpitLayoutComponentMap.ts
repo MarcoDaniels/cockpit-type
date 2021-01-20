@@ -13,7 +13,7 @@ export const cockpitLayoutComponentMap = ({ component, fieldName, prefix }: Cock
         case 'text':
             return `settings: {text: string}`
         case 'image':
-            return `settings: {image: ${prefix}ImageType}`
+            return `settings: {image: ImageType}`
         case 'grid':
             return `columns: ${prefix}${fieldName}${LayoutChildrenSuffix}[]`
         case 'section':
@@ -23,7 +23,7 @@ export const cockpitLayoutComponentMap = ({ component, fieldName, prefix }: Cock
         case 'heading':
             return `settings: {text: string, tag: string}`
         case 'gallery':
-            return `settings: {gallery: ${prefix}GalleryType[]}`
+            return `settings: {gallery: GalleryType[]}`
         case 'divider':
             return `settings: {style: string}`
         case 'button':
