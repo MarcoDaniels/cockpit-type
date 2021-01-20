@@ -1,6 +1,6 @@
 import { Field, layoutComponents } from './cockpitTypes'
 import { cockpitLayoutComponentMap, LayoutChildrenSuffix } from './cockpitLayoutComponentMap'
-import { createUnion, createUnionMultiple, createUnionType, createUnionTypeMultiple } from '../typescript/createUnion'
+import { createUnion, createUnionMultiple, createUnionTypeMultiple } from '../typescript/createUnion'
 import { createTypeName } from '../typescript/createTypeName'
 import { createType } from '../typescript/createType'
 import * as util from 'util'
@@ -22,9 +22,19 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
         case 'boolean':
             return { value: withMaybeType('boolean') }
         case 'select':
-            return { value: withMaybeType(createUnion(field.options.options.split(', '))) }
+            switch (typeof field.options.options) {
+                case 'object':
+                    return { value: withMaybeType(createUnion(field.options.options.map((t) => t.value))) }
+                default:
+                    return { value: withMaybeType(createUnion(field.options.options.split(', '))) }
+            }
         case 'multipleselect':
-            return { value: withMaybeType(createUnionMultiple(field.options.options.split(', '))) }
+            switch (typeof field.options.options) {
+                case 'object':
+                    return { value: withMaybeType(createUnionMultiple(field.options.options.map((t) => t.value))) }
+                default:
+                    return { value: withMaybeType(createUnionMultiple(field.options.options.split(', '))) }
+            }
         case 'collectionlink':
         case 'collectionlinkselect':
             return {
@@ -50,7 +60,7 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
             }))
 
             return {
-                value: withMaybeType(createUnionType(fields.map((t) => t.name))),
+                value: withMaybeType(createUnionTypeMultiple(fields.map((t) => t.name))),
                 template: fields.map((t) => t.type).join(''),
             }
         case 'layout':
