@@ -21,6 +21,36 @@
 
 |Option|Type|Description|
 |---|:---:|---|
+|language|string|Programming language|
 |path|string|Destination file|
 |prefix|string|Prefix for the types|
 |filter|string|Filter option ex: 'group=My Groups' allowed filters: 'collection', 'singleton' or 'group'|
+
+## TypeScript
+
+Types are generated using `type`:
+
+```typescript
+export type ImageType = {
+    path: string
+}
+
+export type GalleryType = ImageType & {
+    meta: {
+        title: string
+        asset: string
+    }
+}
+```
+
+## Scala
+
+Types are generated using `case class`:
+
+```scala
+case class ImageType(path: String)
+
+case class MetaType(title: String, asset: String)
+
+case class GalleryType(meta: MetaType, path: String)
+```

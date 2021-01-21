@@ -11,5 +11,4 @@ build/
 .npmrc
 *.log
 
-debug.ts
-debug.d.ts
+debug.*
