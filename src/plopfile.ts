@@ -29,6 +29,7 @@ export default (plop: NodePlopAPI) => {
                 path: `${process.cwd()}/{{path}}`,
                 templateFile: 'template/scala.scala',
                 force: true,
+                transform: plopAddTransform({ language: 'scala' }),
             },
         ],
     })

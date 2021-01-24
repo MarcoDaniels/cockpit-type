@@ -1,16 +1,18 @@
 import { Field, layoutComponents } from './cockpitTypes'
 import { cockpitLayoutComponentMap, LayoutChildrenSuffix } from './cockpitLayoutComponentMap'
-import { createUnion, createUnionMultiple, createUnionTypeMultiple } from '../typescript/createUnion'
-import { createTypeName } from '../typescript/createTypeName'
-import { createType } from '../typescript/createType'
 import * as util from 'util'
+import { SchemaTemplate } from '../utils/schemaTemplate'
 
-type FieldMap = {
+export type FieldMap = SchemaTemplate & {
+    field: Field
+}
+
+export type FieldMapOutput = {
     value: string
     template?: string
 }
 
-const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
+export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => {
     switch (field.type) {
         case 'text':
         case 'markdown':
@@ -22,24 +24,24 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
         case 'select':
             switch (typeof field.options.options) {
                 case 'object':
-                    return { value: createUnion(field.options.options.map((t) => t.value)) }
+                    return { value: maker.makeUnionStringType(field.options.options.map((t) => t.value)) }
                 default:
-                    return { value: createUnion(field.options.options.split(', ')) }
+                    return { value: maker.makeUnionStringType(field.options.options.split(', ')) }
             }
         case 'multipleselect':
             switch (typeof field.options.options) {
                 case 'object':
-                    return { value: createUnionMultiple(field.options.options.map((t) => t.value)) }
+                    return { value: maker.makeUnionStingMultipleType(field.options.options.map((t) => t.value)) }
                 default:
-                    return { value: createUnionMultiple(field.options.options.split(', ')) }
+                    return { value: maker.makeUnionStingMultipleType(field.options.options.split(', ')) }
             }
         case 'collectionlink':
         case 'collectionlinkselect':
             return {
-                value: `${prefix}${createTypeName(field.options.link)}${field.options.multiple ? `[]` : ``}`,
+                value: `${prefix}${maker.makeTypeName(field.options.link)}${field.options.multiple ? `[]` : ``}`,
             }
         case 'moderation':
-            return { value: createUnion(['Unpublished', 'Draft', 'Published']) }
+            return { value: maker.makeUnionStringType(['Unpublished', 'Draft', 'Published']) }
         case 'asset':
             return { value: `AssetType` }
         case 'image':
@@ -49,26 +51,29 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
         case 'repeater':
             const fields = field.options.fields.map((f) => ({
                 name: `${field.name}${f.label}`,
-                type: createType({
+                type: maker.makeType({
                     name: `${field.name}${f.label}`,
-                    fields: [`field: ${util.inspect(f)}`, `value: ${fieldMap(prefix)({ ...f, required: true }).value}`],
+                    fields: [
+                        `field: ${util.inspect(f)}`,
+                        `value: ${fieldMap({ prefix, maker, field: { ...f, required: true } }).value}`,
+                    ],
                 }),
             }))
 
             return {
-                value: createUnionTypeMultiple(fields.map((t) => t.name)),
+                value: maker.makeUnionMultipleType(fields.map((t) => t.name)),
                 template: fields.map((t) => t.type).join(''),
             }
         case 'layout':
         case 'layout-grid':
-            const fieldName = createTypeName(field.name)
+            const fieldName = maker.makeTypeName(field.name)
 
             const components = layoutComponents
                 .filter((c) => !field.options.exclude || !field.options.exclude.includes(c))
                 .map((component) => ({
-                    name: `${prefix}${fieldName}${createTypeName(component)}`,
-                    type: createType({
-                        name: `${prefix}${fieldName}${createTypeName(component)}`,
+                    name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
+                    type: maker.makeType({
+                        name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
                         fields: [
                             `component: '${component}'`,
                             `${cockpitLayoutComponentMap({ component, fieldName, prefix })}`,
@@ -76,13 +81,13 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
                     }),
                 }))
 
-            const layoutChildrenType = createType({
+            const layoutChildrenType = maker.makeType({
                 name: `${prefix}${fieldName}${LayoutChildrenSuffix}`,
-                fields: [`children: ${createUnionTypeMultiple(components.map((t) => t.name))}`],
+                fields: [`children: ${maker.makeUnionMultipleType(components.map((t) => t.name))}`],
             })
 
             return {
-                value: createUnionTypeMultiple(components.map((t) => t.name)),
+                value: maker.makeUnionMultipleType(components.map((t) => t.name)),
                 template: `${layoutChildrenType}${components.map((t) => t.type).join('')}`,
             }
         default:
@@ -90,13 +95,13 @@ const fieldMap = (prefix?: string) => (field: Field): FieldMap => {
     }
 }
 
-export type CockpitFieldMap = FieldMap & {
+export type CockpitFieldMapOutput = FieldMapOutput & {
     comment: string | null
     key: string
 }
 
-export const cockpitFieldMap = (prefix?: string) => (field: Field): CockpitFieldMap => ({
+export const cockpitFieldMap = (schema: SchemaTemplate) => (field: Field): CockpitFieldMapOutput => ({
     comment: field.info || null,
     key: `${field.name}${field.required ? `` : `?`}`,
-    ...fieldMap(prefix)(field),
+    ...fieldMap({ ...schema, field }),
 })

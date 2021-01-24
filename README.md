@@ -26,6 +26,8 @@
 |prefix|string|Prefix for the types|
 |filter|string|Filter option ex: 'group=My Groups' allowed filters: 'collection', 'singleton' or 'group'|
 
+example: `cockpit-type typescript path/to/file.ts MyPrefix 'group=My Group'`
+
 ## TypeScript
 
 Types are generated using `type`:
