@@ -1,6 +1,5 @@
 import { Field, layoutComponents } from './cockpitTypes'
 import { cockpitLayoutComponentMap, LayoutChildrenSuffix } from './cockpitLayoutComponentMap'
-import * as util from 'util'
 import { SchemaTemplate } from '../utils/schemaTemplate'
 
 export type FieldMap = SchemaTemplate & {
@@ -18,9 +17,9 @@ export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => 
         case 'markdown':
         case 'code':
         case 'file':
-            return { value: `string` }
+            return { value: maker.makeString() }
         case 'boolean':
-            return { value: `boolean` }
+            return { value: maker.makeBoolean() }
         case 'select':
             switch (typeof field.options.options) {
                 case 'object':
@@ -37,8 +36,9 @@ export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => 
             }
         case 'collectionlink':
         case 'collectionlinkselect':
+            const linkType = maker.makeTypeName(field.options.link)
             return {
-                value: `${prefix}${maker.makeTypeName(field.options.link)}${field.options.multiple ? `[]` : ``}`,
+                value: `${prefix}${field.options.multiple ? maker.makeMultiple(linkType) : linkType}`,
             }
         case 'moderation':
             return { value: maker.makeUnionStringType(['Unpublished', 'Draft', 'Published']) }
@@ -47,16 +47,13 @@ export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => 
         case 'image':
             return { value: `ImageType` }
         case 'gallery':
-            return { value: `GalleryType[]` }
+            return { value: `${maker.makeMultiple(`GalleryType`)}` }
         case 'repeater':
             const fields = field.options.fields.map((f) => ({
                 name: `${field.name}${f.label}`,
                 type: maker.makeType({
                     name: `${field.name}${f.label}`,
-                    fields: [
-                        `field: ${util.inspect(f)}`,
-                        `value: ${fieldMap({ prefix, maker, field: { ...f, required: true } }).value}`,
-                    ],
+                    fields: [`field: ${maker.makeObject(f)}`, `value: ${fieldMap({ prefix, maker, field: f }).value}`],
                 }),
             }))
 
@@ -75,8 +72,8 @@ export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => 
                     type: maker.makeType({
                         name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
                         fields: [
-                            `component: '${component}'`,
-                            `${cockpitLayoutComponentMap({ component, fieldName, prefix })}`,
+                            `component: ${maker.makeLiteral(component)}`,
+                            `${cockpitLayoutComponentMap({ component, fieldName, prefix, maker })}`,
                         ],
                     }),
                 }))
@@ -91,17 +88,19 @@ export const fieldMap = ({ prefix, maker, field }: FieldMap): FieldMapOutput => 
                 template: `${layoutChildrenType}${components.map((t) => t.type).join('')}`,
             }
         default:
-            return { value: `any // TODO: field type "${field.type}" is not being handled` }
+            return { value: maker.makeAny(field.type) }
     }
 }
 
 export type CockpitFieldMapOutput = FieldMapOutput & {
     comment: string | null
+    required: boolean
     key: string
 }
 
 export const cockpitFieldMap = (schema: SchemaTemplate) => (field: Field): CockpitFieldMapOutput => ({
     comment: field.info || null,
-    key: `${field.name}${field.required ? `` : `?`}`,
+    required: field.required,
+    key: field.name,
     ...fieldMap({ ...schema, field }),
 })
