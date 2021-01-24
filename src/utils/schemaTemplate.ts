@@ -27,7 +27,7 @@ export const schemaTemplate = ({ prefix, maker }: SchemaTemplate) => (schema: Fi
     // create main entry type data
     template += maker.makeType({
         name: `${entryTypeName}Data`,
-        fields: [`entries: ${entryTypeName}[]`],
+        fields: [`entries: ${maker.makeMultiple(entryTypeName)}`],
     })
 
     return template

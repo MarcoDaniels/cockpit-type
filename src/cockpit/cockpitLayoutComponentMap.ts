@@ -1,4 +1,5 @@
 import { LayoutFieldComponents } from './cockpitTypes'
+import { MakerType } from '../maker/MakerType'
 
 export const LayoutChildrenSuffix = `LayoutChildren`
 
@@ -6,29 +7,32 @@ export type CockpitLayoutComponentMap = {
     component: LayoutFieldComponents
     fieldName: string
     prefix?: string
+    maker: MakerType
 }
 
-export const cockpitLayoutComponentMap = ({ component, fieldName, prefix }: CockpitLayoutComponentMap) => {
+export const cockpitLayoutComponentMap = ({ component, fieldName, prefix, maker }: CockpitLayoutComponentMap) => {
     switch (component) {
         case 'text':
-            return `settings: {text: string}`
+            return `settings: ${maker.makeObject(`{text: string}`, true)}`
         case 'image':
-            return `settings: {image: ImageType}`
+            return `settings: ${maker.makeObject(`{image: ImageType}`, true)}`
         case 'grid':
-            return `columns: ${prefix}${fieldName}${LayoutChildrenSuffix}[]`
+            return `columns: ${maker.makeMultiple(
+                maker.makeObject(`${prefix}${fieldName}${LayoutChildrenSuffix}`, true),
+            )}`
         case 'section':
-            return `children: ${prefix}${fieldName}${LayoutChildrenSuffix}['children']`
+            return `children: ${maker.makeObject(`${prefix}${fieldName}${LayoutChildrenSuffix}['children']`, true)}`
         case 'html':
-            return `settings: {html: string}`
+            return `settings: ${maker.makeObject(`{html: string}`, true)}`
         case 'heading':
-            return `settings: {text: string, tag: string}`
+            return `settings: ${maker.makeObject(`{text: string, tag: string}`, true)}`
         case 'gallery':
-            return `settings: {gallery: GalleryType[]}`
+            return `settings: ${maker.makeObject(`{gallery: GalleryType[]}`, true)}`
         case 'divider':
-            return `settings: {style: string}`
+            return `settings: ${maker.makeObject(`{style: string}`, true)}`
         case 'button':
-            return `settings: {text: string, url: string}`
+            return `settings: ${maker.makeObject(`{text: string, url: string}`, true)}`
         default:
-            return `todo: any // TODO: layout field for component ${component}`
+            return `todo: ${maker.makeAny(component)}`
     }
 }

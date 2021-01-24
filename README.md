@@ -30,7 +30,7 @@ example: `cockpit-type typescript path/to/file.ts MyPrefix 'group=My Group'`
 
 ## TypeScript
 
-Types are generated using `type`:
+Types are generated using `type` keyword:
 
 ```typescript
 export type ImageType = {
@@ -47,12 +47,19 @@ export type GalleryType = ImageType & {
 
 ## Scala
 
-Types are generated using `case class`:
+* Types are generated using `case class`.
+* Requires JSON library [circe](https://circe.github.io/circe/) as a dependency.
 
 ```scala
+import io.circe.Json
+import io.circe.generic.JsonCodec
+
+@JsonCodec
 case class ImageType(path: String)
 
+@JsonCodec
 case class MetaType(title: String, asset: String)
 
+@JsonCodec
 case class GalleryType(meta: MetaType, path: String)
 ```
