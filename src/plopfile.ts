@@ -1,6 +1,6 @@
 import { NodePlopAPI } from 'plop'
 import { plopPrompt } from './plop/plopPrompt'
-import { plopAddTransform } from './plop/plopAddTransform'
+import { plopTransform } from './plop/plopTransform'
 import { formatPrettier } from './utils/formatPrettier'
 
 export type LanguageType = 'typescript' | 'scala'
@@ -15,7 +15,7 @@ export default (plop: NodePlopAPI) => {
                 path: `${process.cwd()}/{{path}}`,
                 templateFile: 'template/typescript.ts',
                 force: true,
-                transform: plopAddTransform({ language: 'typescript', formatOutput: formatPrettier }),
+                transform: plopTransform({ language: 'typescript', formatOutput: formatPrettier }),
             },
         ],
     })
@@ -29,7 +29,7 @@ export default (plop: NodePlopAPI) => {
                 path: `${process.cwd()}/{{path}}`,
                 templateFile: 'template/scala.scala',
                 force: true,
-                transform: plopAddTransform({ language: 'scala' }),
+                transform: plopTransform({ language: 'scala' }),
             },
         ],
     })

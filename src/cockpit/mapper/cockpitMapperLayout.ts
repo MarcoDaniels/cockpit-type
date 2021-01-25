@@ -1,16 +1,16 @@
-import { LayoutFieldComponents } from './cockpitTypes'
-import { MakerType } from '../maker/MakerType'
+import { LayoutFieldComponents } from '../cockpitTypes'
+import { MakerType } from '../../maker/makerTypes'
 
 export const LayoutChildrenSuffix = `LayoutChildren`
 
-export type CockpitLayoutComponentMap = {
+export type CockpitMapperLayout = {
     component: LayoutFieldComponents
     fieldName: string
     prefix?: string
     maker: MakerType
 }
 
-export const cockpitLayoutComponentMap = ({ component, fieldName, prefix, maker }: CockpitLayoutComponentMap) => {
+export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: CockpitMapperLayout) => {
     switch (component) {
         case 'text':
             return `settings: ${maker.makeObject(`{text: string}`, true)}`
