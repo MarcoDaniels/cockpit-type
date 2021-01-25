@@ -1,11 +1,6 @@
 import { PlopGenerator } from 'plop'
-import { filterByReg } from '../utils/filterBy'
+import { filterByReg } from './plopFilterBy'
 import { LanguageType } from '../plopfile'
-
-export type PlopPromptAnswers = {
-    filter: string
-    prefix?: string
-}
 
 export const plopPrompt = (lang: LanguageType): PlopGenerator['prompts'] => [
     {
@@ -16,11 +11,9 @@ export const plopPrompt = (lang: LanguageType): PlopGenerator['prompts'] => [
             switch (lang) {
                 case 'typescript':
                     if (/(.*\.(?:d.ts|ts))/i.test(path)) return true
-
                     return 'Please provide a valid TypeScript file path'
                 case 'scala':
                     if (/(.*\.(?:scala))/i.test(path)) return true
-
                     return 'Please provide a valid Scala file path'
             }
         },
@@ -29,6 +22,10 @@ export const plopPrompt = (lang: LanguageType): PlopGenerator['prompts'] => [
         type: 'input',
         name: 'prefix',
         message: 'Prefix all your types with:',
+        validate: (prefix: string) => {
+            if (/\s/.test(prefix)) return 'Prefix cannot include space.'
+            return true
+        },
     },
     {
         type: 'input',
@@ -36,7 +33,6 @@ export const plopPrompt = (lang: LanguageType): PlopGenerator['prompts'] => [
         message: 'Filter Types by (filterItem=filterName):',
         validate: (filter: string) => {
             if (!filter || filterByReg.test(filter)) return true
-
             return 'Please provide one of the following filterItem (collection|singleton|group)'
         },
     },

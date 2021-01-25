@@ -1,11 +1,11 @@
 export const filterByReg = /(collection|group|singleton)=([^]*)/giu
 
-export type FilterBy = {
+export type PlopFilterBy = {
     filterBy: 'collection' | 'group' | 'singleton'
     filterName: string
 }
 
-export const filterBy = (input: string): FilterBy | undefined => {
+export const plopFilterBy = (input: string): PlopFilterBy | undefined => {
     const matchInput = input.match(filterByReg)
 
     if (matchInput) {
@@ -13,7 +13,7 @@ export const filterBy = (input: string): FilterBy | undefined => {
             .map((t) => t.split('='))
             .map(([filterBy, filterName]) => ({ filterBy, filterName }))
 
-        return filters as FilterBy
+        return filters as PlopFilterBy
     }
 
     return undefined

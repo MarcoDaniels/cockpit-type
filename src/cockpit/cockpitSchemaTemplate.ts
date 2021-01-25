@@ -1,18 +1,18 @@
-import { FieldSchema } from '../cockpit/cockpitTypes'
-import { cockpitFieldMap } from '../cockpit/cockpitFieldMap'
-import { MakerType } from '../maker/MakerType'
+import { FieldSchema } from './cockpitTypes'
+import { cockpitMapperField } from './mapper/cockpitMapperField'
+import { MakerType } from '../maker/makerTypes'
 
-export type SchemaTemplate = {
+export type CockpitSchemaTemplate = {
     maker: MakerType
     prefix?: string
 }
 
-export const schemaTemplate = ({ prefix, maker }: SchemaTemplate) => (schema: FieldSchema) => {
+export const cockpitSchemaTemplate = ({ prefix, maker }: CockpitSchemaTemplate) => (schema: FieldSchema) => {
     let template = ''
 
     const entryTypeName = `${prefix}${maker.makeTypeName(schema.label ? schema.label.replace(' ', '') : schema.name)}`
 
-    const entryItems = schema.fields.map(cockpitFieldMap({ prefix, maker })).map((field) => {
+    const entryItems = schema.fields.map(cockpitMapperField({ prefix, maker })).map((field) => {
         if (field.template) template += field.template
         return maker.makeTypeEntry(field)
     })

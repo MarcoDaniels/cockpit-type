@@ -1,38 +1,37 @@
-import { PlopPromptAnswers } from './plopPrompt'
-import { filterBy } from '../utils/filterBy'
+import { plopFilterBy } from './plopFilterBy'
 import { cockpitClient } from '../cockpit/cockpitClient'
-import { SchemaTemplate, schemaTemplate } from '../utils/schemaTemplate'
+import { CockpitSchemaTemplate, cockpitSchemaTemplate } from '../cockpit/cockpitSchemaTemplate'
 import { LanguageType } from '../plopfile'
 import { maker as LanguageMaker } from '../maker/maker'
 
-export type PlopAddTransform = {
+export type PlopPromptAnswers = {
+    filter: string
+    prefix?: string
+}
+
+export type PlopTransform = {
     language: LanguageType
     formatOutput?: (template: string) => string | Promise<string>
 }
 
-export const plopAddTransform = ({ language, formatOutput }: PlopAddTransform) => async (
-    template: string,
-    answers: PlopPromptAnswers,
-) => {
-    const schema: SchemaTemplate = {
-        maker: LanguageMaker(language),
-        prefix: answers.prefix,
-    }
+export const plopTransform = (transform: PlopTransform) => async (template: string, answers: PlopPromptAnswers) => {
+    const { language, formatOutput } = transform
+    const schema: CockpitSchemaTemplate = { maker: LanguageMaker(language), prefix: answers.prefix }
+    const filters = plopFilterBy(answers.filter)
 
-    const filters = filterBy(answers.filter)
     if (filters) {
         switch (filters.filterBy) {
             case 'collection':
                 const collection = await cockpitClient.collectionSchema(filters.filterName)
                 if (collection.type === 'success') {
-                    template += schemaTemplate(schema)(collection.data)
+                    template += cockpitSchemaTemplate(schema)(collection.data)
                 }
 
                 return formatOutput ? formatOutput(template) : template
             case 'singleton':
                 const singleton = await cockpitClient.singletonSchema(filters.filterName)
                 if (singleton.type === 'success') {
-                    template += schemaTemplate(schema)(singleton.data)
+                    template += cockpitSchemaTemplate(schema)(singleton.data)
                 }
 
                 return formatOutput ? formatOutput(template) : template
@@ -42,7 +41,7 @@ export const plopAddTransform = ({ language, formatOutput }: PlopAddTransform) =
                 if (collectionResponse.type === 'success' && singletonResponse.type === 'success') {
                     collectionResponse.data
                         .concat(singletonResponse.data)
-                        .map(schemaTemplate(schema))
+                        .map(cockpitSchemaTemplate(schema))
                         .map((schemaTemplate) => (template += schemaTemplate))
                 }
 
@@ -55,7 +54,7 @@ export const plopAddTransform = ({ language, formatOutput }: PlopAddTransform) =
     if (collectionResponse.type === 'success' && singletonResponse.type === 'success') {
         collectionResponse.data
             .concat(singletonResponse.data)
-            .map(schemaTemplate(schema))
+            .map(cockpitSchemaTemplate(schema))
             .map((schemaTemplate) => (template += schemaTemplate))
     }
 

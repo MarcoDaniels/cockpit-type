@@ -1,5 +1,5 @@
 import { LanguageType } from '../plopfile'
-import { MakeType, MakeTypeEntry, MakeTypeName, MakeUnionType, MakerType } from './MakerType'
+import { MakeType, MakeTypeEntry, MakeTypeName, MakeUnionType, MakerType } from './makerTypes'
 import * as util from 'util'
 
 export const maker = (language: LanguageType): MakerType => ({
@@ -35,7 +35,7 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
         }
     },
     makeTypeName: (name: MakeTypeName) => name.charAt(0).toUpperCase() + name.slice(1),
-    makeUnionType: (data: MakeUnionType) => {
+    makeUnion: (data: MakeUnionType) => {
         switch (language) {
             case 'typescript':
                 return `${data.join(' | ')}`
@@ -43,7 +43,7 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
                 return `Json`
         }
     },
-    makeUnionMultipleType: (data: MakeUnionType) => {
+    makeUnionMultiple: (data: MakeUnionType) => {
         switch (language) {
             case 'typescript':
                 return `(${data.join(' | ')})[]`
@@ -51,7 +51,7 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
                 return `List[Json]`
         }
     },
-    makeUnionStringType: (data: MakeUnionType) => {
+    makeUnionString: (data: MakeUnionType) => {
         switch (language) {
             case 'typescript':
                 return `'${data.join("' | '")}'`
@@ -59,7 +59,7 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
                 return `String`
         }
     },
-    makeUnionStingMultipleType: (data: MakeUnionType) => {
+    makeUnionStringMultiple: (data: MakeUnionType) => {
         switch (language) {
             case 'typescript':
                 return `('${data.join("' | '")}')[]`
