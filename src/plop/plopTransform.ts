@@ -1,25 +1,12 @@
 import { plopFilterBy } from './plopFilterBy'
 import { cockpitClient } from '../cockpit/cockpitClient'
 import { CockpitSchemaTemplate, cockpitSchemaTemplate } from '../cockpit/cockpitSchemaTemplate'
-import { LanguageType } from '../plopfile'
 import { maker as LanguageMaker } from '../maker/maker'
+import { PlopPrompt } from './plopPrompt'
+import { formatOutput } from '../utils/formatOutput'
 
-export type PlopPromptAnswers = {
-    filter: string
-    prefix?: string
-}
-
-export type PlopTransform = {
-    language: LanguageType
-    formatOutput?: (template: string) => string | Promise<string>
-}
-
-export const plopTransform = (transform: PlopTransform) => async (
-    template: string,
-    answers: PlopPromptAnswers,
-): Promise<string> => {
-    const { language, formatOutput } = transform
-    const schema: CockpitSchemaTemplate = { maker: LanguageMaker(language), prefix: answers.prefix }
+export const plopTransform = async (template: string, answers: PlopPrompt): Promise<string> => {
+    const schema: CockpitSchemaTemplate = { maker: LanguageMaker(answers.language), prefix: answers.prefix }
     const filters = plopFilterBy(answers.filter)
 
     if (filters) {
@@ -30,7 +17,7 @@ export const plopTransform = (transform: PlopTransform) => async (
                     template += cockpitSchemaTemplate(schema)(collection.data)
                 }
 
-                return formatOutput ? formatOutput(template) : template
+                return formatOutput(template, answers)
             }
             case 'singleton': {
                 const singleton = await cockpitClient.singletonSchema(filters.filterName)
@@ -38,7 +25,7 @@ export const plopTransform = (transform: PlopTransform) => async (
                     template += cockpitSchemaTemplate(schema)(singleton.data)
                 }
 
-                return formatOutput ? formatOutput(template) : template
+                return formatOutput(template, answers)
             }
             case 'group': {
                 const collection = await cockpitClient.collections(filters.filterName)
@@ -50,7 +37,7 @@ export const plopTransform = (transform: PlopTransform) => async (
                         .map((schemaTemplate) => (template += schemaTemplate))
                 }
 
-                return formatOutput ? formatOutput(template) : template
+                return formatOutput(template, answers)
             }
         }
     }
@@ -64,5 +51,5 @@ export const plopTransform = (transform: PlopTransform) => async (
             .map((schemaTemplate) => (template += schemaTemplate))
     }
 
-    return formatOutput ? formatOutput(template) : template
+    return formatOutput(template, answers)
 }

@@ -1,8 +1,8 @@
-import { LanguageType } from '../plopfile'
 import { MakeType, MakeTypeEntry, MakeTypeName, MakeUnionType, MakerType } from './makerTypes'
 import * as util from 'util'
+import { PlopPrompt } from '../plop/plopPrompt'
 
-export const maker = (language: LanguageType): MakerType =>
+export const maker = (language: PlopPrompt['language']): MakerType =>
     <MakerType>{
         makeType: ({ name, description, fields }: MakeType) => {
             switch (language) {

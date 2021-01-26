@@ -1,14 +1,26 @@
 import { PlopGenerator } from 'plop'
 import { filterByReg } from './plopFilterBy'
-import { LanguageType } from '../plopfile'
 
-export const plopPrompt = (lang: LanguageType): PlopGenerator['prompts'] => [
+export type PlopPrompt = {
+    language: 'typescript' | 'scala'
+    path: string
+    filter: string
+    prefix?: string
+}
+
+export const plopPrompt = (): PlopGenerator['prompts'] => [
+    {
+        type: 'list',
+        name: 'language',
+        message: 'Select programing language:',
+        choices: ['typescript', 'scala'],
+    },
     {
         type: 'input',
         name: 'path',
         message: 'Destination File:',
-        validate: (path: string) => {
-            switch (lang) {
+        validate: (path: string, answers: PlopPrompt) => {
+            switch (answers.language) {
                 case 'typescript':
                     if (/(.*\.(?:d.ts|ts))/i.test(path)) return true
                     return 'Please provide a valid TypeScript file path'
