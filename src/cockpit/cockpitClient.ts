@@ -67,32 +67,32 @@ const filterFn = (filterByGroup?: string) => <T>(schema: T) =>
         : Object.values(schema)
 
 export const cockpitClient = {
-    collectionsId: () =>
+    collectionsId: (): ResponseResult<string[]> =>
         baseCockpitClient<string[], string[]>({
             url: `collections/listCollections`,
             modFn: baseFn,
         }),
-    collections: (filterByGroup?: string) =>
+    collections: (filterByGroup?: string): ResponseResult<FieldSchema[]> =>
         baseCockpitClient<Schema, FieldSchema[]>({
             url: `collections/listCollections/extended`,
             modFn: filterFn(filterByGroup),
         }),
-    collectionSchema: (id: string) =>
+    collectionSchema: (id: string): ResponseResult<FieldSchema> =>
         baseCockpitClient<FieldSchema, FieldSchema>({
             url: `collections/collection/${id}`,
             modFn: baseFn,
         }),
-    singletonsId: () =>
+    singletonsId: (): ResponseResult<string[]> =>
         baseCockpitClient<string[], string[]>({
             url: `singletons/listSingletons`,
             modFn: baseFn,
         }),
-    singletons: (filterByGroup?: string) =>
+    singletons: (filterByGroup?: string): ResponseResult<FieldSchema[]> =>
         baseCockpitClient<Schema, FieldSchema[]>({
             url: `singletons/listSingletons/extended`,
             modFn: filterFn(filterByGroup),
         }),
-    singletonSchema: (id: string) =>
+    singletonSchema: (id: string): ResponseResult<FieldSchema> =>
         baseCockpitClient<FieldSchema, FieldSchema>({
             url: `singletons/singleton/${id}`,
             modFn: baseFn,

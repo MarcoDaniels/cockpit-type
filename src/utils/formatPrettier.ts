@@ -1,6 +1,6 @@
 import { format, resolveConfig } from 'prettier'
 
-export const formatPrettier = async (input: string) => {
+export const formatPrettier = async (input: string): Promise<string> => {
     const prettierConfig = await resolveConfig(process.cwd())
     if (prettierConfig) {
         return format(input, { parser: 'babel-ts', ...prettierConfig })

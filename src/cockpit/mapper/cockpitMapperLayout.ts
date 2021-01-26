@@ -10,7 +10,7 @@ export type CockpitMapperLayout = {
     maker: MakerType
 }
 
-export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: CockpitMapperLayout) => {
+export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: CockpitMapperLayout): string => {
     switch (component) {
         case 'text':
             return `settings: ${maker.makeObject(`{text: string}`, true)}`

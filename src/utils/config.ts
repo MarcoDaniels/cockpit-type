@@ -8,7 +8,7 @@ export type ConfigType = {
 }
 
 if (!process.env.COCKPIT_API_URL || !process.env.COCKPIT_API_TOKEN) {
-    console.log(`💥 environment configuration missing, check .env file`)
+    console.error(`💥 environment configuration missing, check .env file`)
     process.exit(1)
 }
 
