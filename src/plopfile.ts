@@ -5,7 +5,7 @@ import { formatPrettier } from './utils/formatPrettier'
 
 export type LanguageType = 'typescript' | 'scala'
 
-export default (plop: NodePlopAPI) => {
+export default (plop: NodePlopAPI): void => {
     plop.setGenerator(`typescript`, {
         description: 'Generates TypeScript types for Cockpit',
         prompts: plopPrompt('typescript'),

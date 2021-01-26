@@ -14,46 +14,52 @@ export type PlopTransform = {
     formatOutput?: (template: string) => string | Promise<string>
 }
 
-export const plopTransform = (transform: PlopTransform) => async (template: string, answers: PlopPromptAnswers) => {
+export const plopTransform = (transform: PlopTransform) => async (
+    template: string,
+    answers: PlopPromptAnswers,
+): Promise<string> => {
     const { language, formatOutput } = transform
     const schema: CockpitSchemaTemplate = { maker: LanguageMaker(language), prefix: answers.prefix }
     const filters = plopFilterBy(answers.filter)
 
     if (filters) {
         switch (filters.filterBy) {
-            case 'collection':
+            case 'collection': {
                 const collection = await cockpitClient.collectionSchema(filters.filterName)
                 if (collection.type === 'success') {
                     template += cockpitSchemaTemplate(schema)(collection.data)
                 }
 
                 return formatOutput ? formatOutput(template) : template
-            case 'singleton':
+            }
+            case 'singleton': {
                 const singleton = await cockpitClient.singletonSchema(filters.filterName)
                 if (singleton.type === 'success') {
                     template += cockpitSchemaTemplate(schema)(singleton.data)
                 }
 
                 return formatOutput ? formatOutput(template) : template
-            case 'group':
-                const collectionResponse = await cockpitClient.collections(filters.filterName)
-                const singletonResponse = await cockpitClient.singletons(filters.filterName)
-                if (collectionResponse.type === 'success' && singletonResponse.type === 'success') {
-                    collectionResponse.data
-                        .concat(singletonResponse.data)
+            }
+            case 'group': {
+                const collection = await cockpitClient.collections(filters.filterName)
+                const singleton = await cockpitClient.singletons(filters.filterName)
+                if (collection.type === 'success' && singleton.type === 'success') {
+                    collection.data
+                        .concat(singleton.data)
                         .map(cockpitSchemaTemplate(schema))
                         .map((schemaTemplate) => (template += schemaTemplate))
                 }
 
                 return formatOutput ? formatOutput(template) : template
+            }
         }
     }
 
-    const collectionResponse = await cockpitClient.collections()
-    const singletonResponse = await cockpitClient.singletons()
-    if (collectionResponse.type === 'success' && singletonResponse.type === 'success') {
-        collectionResponse.data
-            .concat(singletonResponse.data)
+    const collection = await cockpitClient.collections()
+    const singleton = await cockpitClient.singletons()
+    if (collection.type === 'success' && singleton.type === 'success') {
+        collection.data
+            .concat(singleton.data)
             .map(cockpitSchemaTemplate(schema))
             .map((schemaTemplate) => (template += schemaTemplate))
     }

@@ -1,0 +1,6 @@
+src/index.ts
+src/template/
+coverage/
+dist/
+
+debug.*

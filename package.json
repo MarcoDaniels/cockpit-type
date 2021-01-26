@@ -2,8 +2,13 @@
     "name": "cockpit-type",
     "description": "Typings generator for your Cockpit CMS content model.",
     "author": "Marco Daniel Martins <marcodanielmartins@gmail.com>",
-    "version": "0.0.2",
+    "version": "0.1.0",
     "license": "MIT",
+    "keywords": [
+        "cockpit-cms",
+        "typescript",
+        "scala"
+    ],
     "repository": {
         "type": "git",
         "url": "https://github.com/MarcoDaniels/cockpit-type.git"
@@ -19,7 +24,8 @@
         "build:exec": "chmod +x dist/index.js",
         "build": "yarn clean && tsc && yarn copy:template && yarn build:exec",
         "generate:build": "node dist/index.js",
-        "generate": "plop --plopfile './src/plopfile.ts'"
+        "generate": "plop --plopfile './src/plopfile.ts'",
+        "lint": "eslint -c .eslintrc ."
     },
     "dependencies": {
         "dotenv": "8.2.0",
@@ -30,7 +36,12 @@
     "devDependencies": {
         "@types/node": "14.14.14",
         "@types/prettier": "2.1.6",
+        "@typescript-eslint/eslint-plugin": "4.14.1",
+        "@typescript-eslint/parser": "4.14.1",
         "copyfiles": "2.4.1",
+        "eslint": "7.18.0",
+        "eslint-config-prettier": "7.2.0",
+        "eslint-plugin-prettier": "3.3.1",
         "rimraf": "3.0.2",
         "ts-node": "9.1.1",
         "typescript": "4.1.3"

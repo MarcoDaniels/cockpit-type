@@ -20,6 +20,13 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
             return { value: maker.makeString() }
         case 'boolean':
             return { value: maker.makeBoolean() }
+        case 'collectionlink':
+        case 'collectionlinkselect': {
+            const linkType = maker.makeTypeName(field.options.link)
+            return {
+                value: `${prefix}${field.options.multiple ? maker.makeMultiple(linkType) : linkType}`,
+            }
+        }
         case 'select':
             switch (typeof field.options.options) {
                 case 'object':
@@ -34,12 +41,6 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
                 default:
                     return { value: maker.makeUnionStringMultiple(field.options.options.split(', ')) }
             }
-        case 'collectionlink':
-        case 'collectionlinkselect':
-            const linkType = maker.makeTypeName(field.options.link)
-            return {
-                value: `${prefix}${field.options.multiple ? maker.makeMultiple(linkType) : linkType}`,
-            }
         case 'moderation':
             return { value: maker.makeUnionString(['Unpublished', 'Draft', 'Published']) }
         case 'asset':
@@ -48,7 +49,7 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
             return { value: `ImageType` }
         case 'gallery':
             return { value: `${maker.makeMultiple(`GalleryType`)}` }
-        case 'repeater':
+        case 'repeater': {
             const fields = field.options.fields.map((f) => ({
                 name: `${field.name}${f.label}`,
                 type: maker.makeType({
@@ -61,8 +62,9 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
                 value: maker.makeUnionMultiple(fields.map((t) => t.name)),
                 template: fields.map((t) => t.type).join(''),
             }
+        }
         case 'layout':
-        case 'layout-grid':
+        case 'layout-grid': {
             const fieldName = maker.makeTypeName(field.name)
 
             const components = layoutComponents
@@ -87,6 +89,7 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
                 value: maker.makeUnionMultiple(components.map((t) => t.name)),
                 template: `${layoutChildrenType}${components.map((t) => t.type).join('')}`,
             }
+        }
         default:
             return { value: maker.makeAny(field.type) }
     }

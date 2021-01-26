@@ -7,7 +7,7 @@ export type CockpitSchemaTemplate = {
     prefix?: string
 }
 
-export const cockpitSchemaTemplate = ({ prefix, maker }: CockpitSchemaTemplate) => (schema: FieldSchema) => {
+export const cockpitSchemaTemplate = ({ prefix, maker }: CockpitSchemaTemplate) => (schema: FieldSchema): string => {
     let template = ''
 
     const entryTypeName = `${prefix}${maker.makeTypeName(schema.label ? schema.label.replace(' ', '') : schema.name)}`
