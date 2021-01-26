@@ -1,36 +1,18 @@
-import { NodePlopAPI } from 'plop'
+import { NodePlopAPI, PlopGenerator } from 'plop'
 import { plopPrompt } from './plop/plopPrompt'
 import { plopTransform } from './plop/plopTransform'
-import { formatPrettier } from './utils/formatPrettier'
 
-export type LanguageType = 'typescript' | 'scala'
-
-export default (plop: NodePlopAPI): void => {
-    plop.setGenerator(`typescript`, {
-        description: 'Generates TypeScript types for Cockpit',
-        prompts: plopPrompt('typescript'),
+export default (plop: NodePlopAPI): PlopGenerator =>
+    plop.setGenerator(`generate`, {
+        description: 'Generates types for Cockpit',
+        prompts: plopPrompt(),
         actions: [
             {
                 type: 'add',
                 path: `${process.cwd()}/{{path}}`,
-                templateFile: 'template/typescript.ts',
+                templateFile: 'template/template.{{language}}',
                 force: true,
-                transform: plopTransform({ language: 'typescript', formatOutput: formatPrettier }),
+                transform: plopTransform,
             },
         ],
     })
-
-    plop.setGenerator(`scala`, {
-        description: 'Generates Scala case class types for Cockpit',
-        prompts: plopPrompt('scala'),
-        actions: [
-            {
-                type: 'add',
-                path: `${process.cwd()}/{{path}}`,
-                templateFile: 'template/scala.scala',
-                force: true,
-                transform: plopTransform({ language: 'scala' }),
-            },
-        ],
-    })
-}
