@@ -1,5 +1,5 @@
 import test from 'ava'
-import { formatOutput } from '../formatOutput'
+import { formatOutput } from '../utils/formatOutput'
 
 test('formatOutput with TypeScript type', async (t) => {
     const template = `type User = { name: string; }`
