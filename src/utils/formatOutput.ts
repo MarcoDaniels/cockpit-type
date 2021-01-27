@@ -1,8 +1,8 @@
 import { PlopPrompt } from '../plop/plopPrompt'
 import { format, resolveConfig } from 'prettier'
 
-export const formatOutput = async (input: string, answers: PlopPrompt): Promise<string> => {
-    switch (answers.language) {
+export const formatOutput = async (input: string, language: PlopPrompt['language']): Promise<string> => {
+    switch (language) {
         case 'typescript': {
             const prettierConfig = await resolveConfig(process.cwd())
             if (prettierConfig) {

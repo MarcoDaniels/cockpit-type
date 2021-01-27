@@ -13,7 +13,10 @@ export const plopPrompt = (): PlopGenerator['prompts'] => [
         type: 'list',
         name: 'language',
         message: 'Select programing language:',
-        choices: ['typescript', 'scala'],
+        choices: [
+            { name: 'TypeScript', value: 'typescript' },
+            { name: 'Scala', value: 'scala' },
+        ],
     },
     {
         type: 'input',

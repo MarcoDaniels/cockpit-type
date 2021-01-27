@@ -17,7 +17,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                     template += cockpitSchemaTemplate(schema)(collection.data)
                 }
 
-                return formatOutput(template, answers)
+                return formatOutput(template, answers.language)
             }
             case 'singleton': {
                 const singleton = await cockpitClient.singletonSchema(filters.filterName)
@@ -25,7 +25,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                     template += cockpitSchemaTemplate(schema)(singleton.data)
                 }
 
-                return formatOutput(template, answers)
+                return formatOutput(template, answers.language)
             }
             case 'group': {
                 const collection = await cockpitClient.collections(filters.filterName)
@@ -37,7 +37,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                         .map((schemaTemplate) => (template += schemaTemplate))
                 }
 
-                return formatOutput(template, answers)
+                return formatOutput(template, answers.language)
             }
         }
     }
@@ -51,5 +51,5 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
             .map((schemaTemplate) => (template += schemaTemplate))
     }
 
-    return formatOutput(template, answers)
+    return formatOutput(template, answers.language)
 }

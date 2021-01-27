@@ -1,0 +1,9 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "module": "AMD",
+        "moduleResolution": "Node",
+        "outFile": "dist/index.js"
+    },
+    "exclude": ["src/**/__tests__/", "src/**/__mocks__/", "node_modules", "coverage", "dist", "src/template"]
+}
