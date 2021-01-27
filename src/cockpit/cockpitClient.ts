@@ -66,6 +66,7 @@ const filterFn = (filterByGroup?: string) => <T>(schema: T) =>
         ? Object.values(schema).filter((data) => data.group && data.group === filterByGroup)
         : Object.values(schema)
 
+// TODO: create type for this
 export const cockpitClient = {
     collectionsId: (): ResponseResult<string[]> =>
         baseCockpitClient<string[], string[]>({

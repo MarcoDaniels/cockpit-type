@@ -29,12 +29,19 @@
         "test": "ava"
     },
     "ava": {
+        "files": [
+            "src/__tests__/**/*.test.ts"
+        ],
         "extensions": [
             "ts"
         ],
         "require": [
             "ts-node/register"
-        ]
+        ],
+        "environmentVariables": {
+            "COCKPIT_API_URL": "https://example.com/api",
+            "COCKPIT_API_TOKEN": "api-token"
+        }
     },
     "dependencies": {
         "dotenv": "8.2.0",
@@ -52,6 +59,7 @@
         "eslint": "7.18.0",
         "eslint-config-prettier": "7.2.0",
         "eslint-plugin-prettier": "3.3.1",
+        "nock": "13.0.6",
         "rimraf": "3.0.2",
         "ts-node": "9.1.1",
         "typescript": "4.1.3"
