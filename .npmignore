@@ -15,3 +15,6 @@ node_modules/
 
 tsconfig.json
 yarn.lock
+
+.nyc_output
+coverage

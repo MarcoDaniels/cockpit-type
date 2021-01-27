@@ -13,5 +13,5 @@
         "resolveJsonModule": true,
         "declaration": true
     },
-    "exclude": ["node_modules", "coverage", "dist", "src/template"]
+    "exclude": ["node_modules", "coverage", ".nyc_output", "dist", "src/template"]
 }
