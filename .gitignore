@@ -12,3 +12,6 @@ build/
 *.log
 
 debug.*
+
+.nyc_output
+coverage
