@@ -1,7 +1,7 @@
 # cockpit-type
 
 [![GitHub release](https://img.shields.io/github/v/release/marcodaniels/cockpit-type?include_prereleases)](https://www.npmjs.com/package/cockpit-type)
-[![Publish](https://github.com/marcodaniels/cockpit-type/workflows/On%20Publish/badge.svg)](https://github.com/MarcoDaniels/cockpit-type/releases)
+[![Publish](https://github.com/marcodaniels/cockpit-type/workflows/Publish/badge.svg)](https://github.com/MarcoDaniels/cockpit-type/releases)
 
 > Typings generator for your [Cockpit CMS](https://getcockpit.com/) content model.
 
@@ -19,12 +19,12 @@
 
 ## CLI options
 
-|Option|Type|Description|
-|---|:---:|---|
-|language|string|Programming language|
-|path|string|Destination file|
-|prefix|string|Prefix for the types|
-|filter|string|Filter option ex: 'group=My Groups' allowed filters: 'collection', 'singleton' or 'group'|
+| Option   |  Type  | Description                                                                               |
+| -------- | :----: | ----------------------------------------------------------------------------------------- |
+| language | string | Programming language                                                                      |
+| path     | string | Destination file                                                                          |
+| prefix   | string | Prefix for the types                                                                      |
+| filter   | string | Filter option ex: 'group=My Groups' allowed filters: 'collection', 'singleton' or 'group' |
 
 example: `cockpit-type typescript path/to/file.ts MyPrefix 'group=My Group'`
 
@@ -47,8 +47,8 @@ export type GalleryType = ImageType & {
 
 ## Scala
 
-* Types are generated using `case class`.
-* Requires JSON library [circe](https://circe.github.io/circe/) as a dependency.
+-   Types are generated using `case class`.
+-   Requires JSON library [circe](https://circe.github.io/circe/) as a dependency.
 
 ```scala
 import io.circe.Json
