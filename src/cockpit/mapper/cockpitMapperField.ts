@@ -44,11 +44,11 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
         case 'moderation':
             return { value: maker.makeUnionString(['Unpublished', 'Draft', 'Published']) }
         case 'asset':
-            return { value: `AssetType` }
+            return { value: `${prefix}AssetType` }
         case 'image':
-            return { value: `ImageType` }
+            return { value: `${prefix}ImageType` }
         case 'gallery':
-            return { value: `${maker.makeMultiple(`GalleryType`)}` }
+            return { value: `${maker.makeMultiple(`${prefix}GalleryType`)}` }
         case 'repeater': {
             const fields = field.options.fields.map((f) => ({
                 name: `${field.name}${f.label}`,
