@@ -1,0 +1,40 @@
+name: Pull Request
+
+on:
+    pull_request:
+        branches: [main]
+
+jobs:
+    lint:
+        runs-on: ubuntu-latest
+        name: Check Lint
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+            - run: yarn --frozen-lockfile
+            - run: yarn lint
+
+    test:
+        runs-on: ubuntu-latest
+        name: Run Tests
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+            - run: yarn --frozen-lockfile
+            - run: yarn test
+
+    build:
+        runs-on: ubuntu-latest
+        name: Build
+        needs: [lint, test]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+            - run: yarn --frozen-lockfile
+            - run: yarn build
