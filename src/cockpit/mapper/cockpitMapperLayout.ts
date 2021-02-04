@@ -4,7 +4,7 @@ import { MakerType } from '../../maker/makerTypes'
 export const LayoutChildrenSuffix = `LayoutChildren`
 
 export type CockpitMapperLayout = {
-    component: LayoutFieldComponents
+    component: LayoutFieldComponents | string
     fieldName: string
     prefix?: string
     maker: MakerType
@@ -13,6 +13,7 @@ export type CockpitMapperLayout = {
 export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: CockpitMapperLayout): string => {
     switch (component) {
         case 'text':
+        case 'markdown':
             return `settings: ${maker.makeObject(`{text: string}`, true)}`
         case 'image':
             return `settings: ${maker.makeObject(`{image: ${prefix}ImageType}`, true)}`
@@ -33,6 +34,6 @@ export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: Coc
         case 'button':
             return `settings: ${maker.makeObject(`{text: string, url: string}`, true)}`
         default:
-            return `todo: ${maker.makeAny(component)}`
+            return `settings: ${maker.makeAny(component)}`
     }
 }
