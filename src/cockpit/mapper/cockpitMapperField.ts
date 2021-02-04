@@ -17,6 +17,7 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
         case 'markdown':
         case 'code':
         case 'file':
+        case 'textarea':
             return { value: maker.makeString() }
         case 'boolean':
             return { value: maker.makeBoolean() }
@@ -73,7 +74,7 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
         case 'layout-grid': {
             const fieldName = maker.makeTypeName(field.name)
 
-            const components = layoutComponents
+            const defaultComponents = layoutComponents
                 .filter((c) => !field.options.exclude || !field.options.exclude.includes(c))
                 .map((component) => ({
                     name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
@@ -85,6 +86,28 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
                         ],
                     }),
                 }))
+
+            const customComponents = field.options.components
+                ? Object.keys(field.options.components).map((c) => {
+                      const fields = field.options.components?.[c].fields || []
+                      const component = c.toLowerCase()
+
+                      return {
+                          name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
+                          type: maker.makeType({
+                              name: `${prefix}${fieldName}${maker.makeTypeName(component)}`,
+                              fields: [
+                                  `component: ${maker.makeLiteral(component)}`,
+                                  `${fields.map((f) =>
+                                      cockpitMapperLayout({ component: f.type, fieldName, prefix, maker }),
+                                  )}`,
+                              ],
+                          }),
+                      }
+                  })
+                : []
+
+            const components = defaultComponents.concat(customComponents)
 
             const layoutChildrenType = maker.makeType({
                 name: `${prefix}${fieldName}${LayoutChildrenSuffix}`,

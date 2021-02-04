@@ -7,7 +7,18 @@ type BaseField = {
 }
 
 export type AnyField = BaseField & {
-    type: 'text' | 'markdown' | 'code' | 'boolean' | 'moderation' | 'file' | 'asset' | 'gallery' | 'image' | 'any-other' // just for ts to reach default
+    type:
+        | 'text'
+        | 'textarea'
+        | 'markdown'
+        | 'code'
+        | 'boolean'
+        | 'moderation'
+        | 'file'
+        | 'asset'
+        | 'gallery'
+        | 'image'
+        | 'any-other' // just for ts to reach default
 }
 
 export type SelectFieldOptions = {
@@ -58,7 +69,12 @@ export type LayoutFieldComponents = typeof layoutComponents[number]
 export type LayoutField = BaseField & {
     type: 'layout' | 'layout-grid'
     options: {
-        exclude: LayoutFieldComponents[]
+        exclude?: LayoutFieldComponents[]
+        components?: {
+            [key: string]: {
+                fields: Field[]
+            }
+        }
     }
 }
 
