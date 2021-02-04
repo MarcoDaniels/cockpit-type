@@ -10,7 +10,7 @@ export type CockpitSchemaTemplate = {
 export const cockpitSchemaTemplate = ({ prefix, maker }: CockpitSchemaTemplate) => (schema: FieldSchema): string => {
     let template = ''
 
-    const entryTypeName = `${prefix}${maker.makeTypeName(schema.label ? schema.label.replace(' ', '') : schema.name)}`
+    const entryTypeName = `${prefix}${maker.makeTypeName(schema.name)}`
 
     const entryItems = schema.fields.map(cockpitMapperField({ prefix, maker })).map((field) => {
         if (field.template) template += field.template
