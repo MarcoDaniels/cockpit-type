@@ -50,13 +50,19 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
         case 'gallery':
             return { value: `${maker.makeMultiple(`${prefix}GalleryType`)}` }
         case 'repeater': {
-            const fields = field.options.fields.map((f) => ({
-                name: `${field.name}${f.label}`,
-                type: maker.makeType({
-                    name: `${field.name}${f.label}`,
-                    fields: [`field: ${maker.makeObject(f)}`, `value: ${mapField({ prefix, maker, field: f }).value}`],
-                }),
-            }))
+            const fields = field.options.fields.map((f) => {
+                const fieldName = maker.makeTypeName(`${field.name}${f.label}`)
+                return {
+                    name: fieldName,
+                    type: maker.makeType({
+                        name: fieldName,
+                        fields: [
+                            `field: ${maker.makeObject(f)}`,
+                            `value: ${mapField({ prefix, maker, field: f }).value}`,
+                        ],
+                    }),
+                }
+            })
 
             return {
                 value: maker.makeUnionMultiple(fields.map((t) => t.name)),

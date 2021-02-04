@@ -35,7 +35,7 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
                     return `${key}: ${required ? value : `Option[${value}]`}`
             }
         },
-        makeTypeName: (name: MakeTypeName) => name.charAt(0).toUpperCase() + name.slice(1),
+        makeTypeName: (name: MakeTypeName) => (name.charAt(0).toUpperCase() + name.slice(1)).replace(/ /g, ''),
         makeUnion: (data: MakeUnionType) => {
             switch (language) {
                 case 'typescript':
