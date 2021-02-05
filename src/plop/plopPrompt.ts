@@ -1,5 +1,6 @@
 import { PlopGenerator } from 'plop'
 import { filterByReg } from './plopFilterBy'
+import { plopValidateAnswers } from './plopValidateAnswers'
 
 export type PlopPrompt = {
     language: 'typescript' | 'scala'
@@ -23,14 +24,8 @@ export const plopPrompt = (): PlopGenerator['prompts'] => [
         name: 'path',
         message: 'Destination File:',
         validate: (path: string, answers: PlopPrompt) => {
-            switch (answers.language) {
-                case 'typescript':
-                    if (/(.*\.(?:d.ts|ts))/i.test(path)) return true
-                    return 'Please provide a valid TypeScript file path'
-                case 'scala':
-                    if (/(.*\.(?:scala))/i.test(path)) return true
-                    return 'Please provide a valid Scala file path'
-            }
+            if (!answers) return true // when bypassing prompt no answer is available
+            return plopValidateAnswers(answers)
         },
     },
     {

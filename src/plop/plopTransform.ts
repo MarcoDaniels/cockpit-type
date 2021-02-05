@@ -4,8 +4,14 @@ import { CockpitSchemaTemplate, cockpitSchemaTemplate } from '../cockpit/cockpit
 import { maker as LanguageMaker } from '../maker/maker'
 import { PlopPrompt } from './plopPrompt'
 import { formatOutput } from '../utils/formatOutput'
+import { plopValidateAnswers } from './plopValidateAnswers'
 
 export const plopTransform = async (template: string, answers: PlopPrompt): Promise<string> => {
+    const validation = plopValidateAnswers(answers)
+    if (typeof validation === 'string') {
+        return validation
+    }
+
     const schema: CockpitSchemaTemplate = { maker: LanguageMaker(answers.language), prefix: answers.prefix }
     const filters = plopFilterBy(answers.filter)
 
