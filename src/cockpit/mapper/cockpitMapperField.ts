@@ -94,7 +94,7 @@ export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: Map
 
             const customComponents = field.options.components
                 ? Object.keys(field.options.components).map((c) => {
-                      const fields = field.options.components?.[c].fields || []
+                      const fields = field.options.components?.[c]?.fields || []
                       const component = c.toLowerCase()
 
                       return {
