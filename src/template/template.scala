@@ -6,7 +6,7 @@ import io.circe.Json
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class {{prefix}}AssetType(
+case class {{prefix}}CPAssetBaseType(
     path: String,
     title: String,
     mime: String,
@@ -27,10 +27,10 @@ case class {{prefix}}AssetType(
 )
 
 @JsonCodec
-case class {{prefix}}ImageType(path: String)
+case class {{prefix}}CPImageBaseType(path: String)
 
 @JsonCodec
-case class {{prefix}}MetaType(title: String, asset: String)
+case class {{prefix}}CPMetaBaseType(title: String, asset: String)
 
 @JsonCodec
-case class {{prefix}}GalleryType(meta: MetaType, path: String)
+case class {{prefix}}CPGalleryBaseType(meta: CPMetaBaseType, path: String)

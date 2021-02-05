@@ -19,6 +19,7 @@ export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: Map
         case 'code':
         case 'file':
         case 'textarea':
+        case 'wysiwyg':
             return { value: maker.makeString() }
         case 'boolean':
             return { value: maker.makeBoolean() }
@@ -46,11 +47,11 @@ export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: Map
         case 'moderation':
             return { value: maker.makeUnionString(['Unpublished', 'Draft', 'Published']) }
         case 'asset':
-            return { value: `${prefix}AssetType` }
+            return { value: `${prefix}CPAssetBaseType` }
         case 'image':
-            return { value: `${prefix}ImageType` }
+            return { value: `${prefix}CPImageBaseType` }
         case 'gallery':
-            return { value: `${maker.makeMultiple(`${prefix}GalleryType`)}` }
+            return { value: `${maker.makeMultiple(`${prefix}CPGalleryBaseType`)}` }
         case 'repeater': {
             const fields = field.options.fields.map((f) => {
                 const fieldName = maker.makeTypeName([baseTypeName, `${field.name || parentName}`, `${f.label}`])
