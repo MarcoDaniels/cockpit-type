@@ -2,8 +2,9 @@ import { Field, layoutComponents } from '../cockpitTypes'
 import { cockpitMapperLayout, LayoutChildrenSuffix } from './cockpitMapperLayout'
 import { CockpitSchemaTemplate } from '../cockpitSchemaTemplate'
 
-export type MapField = CockpitSchemaTemplate & {
+export type MapField = CockpitMapperField & {
     field: Field
+    parentName?: string
 }
 
 export type MapFieldOutput = {
@@ -11,7 +12,7 @@ export type MapFieldOutput = {
     template?: string
 }
 
-export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => {
+export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: MapField): MapFieldOutput => {
     switch (field.type) {
         case 'text':
         case 'markdown':
@@ -52,14 +53,17 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
             return { value: `${maker.makeMultiple(`${prefix}GalleryType`)}` }
         case 'repeater': {
             const fields = field.options.fields.map((f) => {
-                const fieldName = maker.makeTypeName(`${field.name}${f.label}`)
+                const fieldName = maker.makeTypeName([baseTypeName, `${field.name || parentName}`, `${f.label}`])
+
                 return {
                     name: fieldName,
                     type: maker.makeType({
                         name: fieldName,
                         fields: [
-                            `field: ${maker.makeObject(f)}`,
-                            `value: ${mapField({ prefix, maker, field: f }).value}`,
+                            `field: ${maker.makeObject({ type: f.type, label: f.label })}`,
+                            `value: ${
+                                mapField({ baseTypeName, prefix, maker, field: f, parentName: field.name }).value
+                            }`,
                         ],
                     }),
                 }
@@ -72,7 +76,7 @@ export const mapField = ({ prefix, maker, field }: MapField): MapFieldOutput => 
         }
         case 'layout':
         case 'layout-grid': {
-            const fieldName = maker.makeTypeName(field.name)
+            const fieldName = maker.makeTypeName([baseTypeName, field.name])
 
             const defaultComponents = layoutComponents
                 .filter((c) => !field.options.exclude || !field.options.exclude.includes(c))
@@ -130,7 +134,11 @@ export type CockpitMapperFieldOutput = MapFieldOutput & {
     key: string
 }
 
-export const cockpitMapperField = (schema: CockpitSchemaTemplate) => (field: Field): CockpitMapperFieldOutput => ({
+export type CockpitMapperField = CockpitSchemaTemplate & {
+    baseTypeName: string
+}
+
+export const cockpitMapperField = (schema: CockpitMapperField) => (field: Field): CockpitMapperFieldOutput => ({
     comment: field.info || null,
     required: field.required,
     key: field.name,
