@@ -19,6 +19,7 @@ export type AnyField = BaseField & {
         | 'gallery'
         | 'image'
         | 'any-other' // just for ts to reach default
+    options?: never
 }
 
 export type SelectFieldOptions = {

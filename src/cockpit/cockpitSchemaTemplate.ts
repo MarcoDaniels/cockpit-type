@@ -12,10 +12,12 @@ export const cockpitSchemaTemplate = ({ prefix, maker }: CockpitSchemaTemplate) 
 
     const entryTypeName = `${prefix}${maker.makeTypeName(schema.name)}`
 
-    const entryItems = schema.fields.map(cockpitMapperField({ prefix, maker })).map((field) => {
-        if (field.template) template += field.template
-        return maker.makeTypeEntry(field)
-    })
+    const entryItems = schema.fields
+        .map(cockpitMapperField({ prefix, maker, baseTypeName: schema.name }))
+        .map((field) => {
+            if (field.template) template += field.template
+            return maker.makeTypeEntry(field)
+        })
 
     // create main entry type
     template += maker.makeType({

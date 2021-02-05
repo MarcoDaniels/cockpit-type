@@ -2,6 +2,8 @@ import { MakeType, MakeTypeEntry, MakeTypeName, MakeUnionType, MakerType } from 
 import * as util from 'util'
 import { PlopPrompt } from '../plop/plopPrompt'
 
+export const makeFormatName = (s: string) => (s.charAt(0).toUpperCase() + s.slice(1)).replace(/ /g, '')
+
 export const maker = (language: PlopPrompt['language']): MakerType =>
     <MakerType>{
         makeType: ({ name, description, fields }: MakeType) => {
@@ -35,7 +37,12 @@ ${fields.map((t) => `    ${t}`).join(`,\n`)}
                     return `${key}: ${required ? value : `Option[${value}]`}`
             }
         },
-        makeTypeName: (name: MakeTypeName) => (name.charAt(0).toUpperCase() + name.slice(1)).replace(/ /g, ''),
+        makeTypeName: (name: MakeTypeName) => {
+            if (Array.isArray(name)) {
+                return name.map(makeFormatName).join('')
+            }
+            return makeFormatName(name)
+        },
         makeUnion: (data: MakeUnionType) => {
             switch (language) {
                 case 'typescript':

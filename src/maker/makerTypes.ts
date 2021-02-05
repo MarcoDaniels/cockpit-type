@@ -11,7 +11,7 @@ export type MakeTypeEntry = {
     value: string
 }
 
-export type MakeTypeName = string
+export type MakeTypeName = string | string[]
 
 export type MakeUnionType = string[]
 
