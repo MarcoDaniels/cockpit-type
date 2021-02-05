@@ -2,7 +2,7 @@
     "name": "cockpit-type",
     "description": "Typings generator for your Cockpit CMS content model.",
     "author": "Marco Daniel Martins <marcodanielmartins@gmail.com>",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "license": "MIT",
     "keywords": [
         "cockpit-cms",

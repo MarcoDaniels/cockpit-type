@@ -3,7 +3,9 @@
         "baseUrl": ".",
         "rootDir": "src",
         "outDir": "dist",
-        "target": "es5",
+        "target": "ES2020",
+        "lib": ["ES2020"],
+        "moduleResolution": "node",
         "sourceMap": false,
         "strict": true,
         "alwaysStrict": true,
@@ -11,7 +13,15 @@
         "noImplicitAny": true,
         "esModuleInterop": true,
         "resolveJsonModule": true,
-        "declaration": true
+        "declaration": true,
+        "stripInternal": true,
+        "noImplicitReturns": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "forceConsistentCasingInFileNames": true,
+        "skipLibCheck": true
     },
     "exclude": ["node_modules", "coverage", ".nyc_output", "dist", "src/template"]
 }

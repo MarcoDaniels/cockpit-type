@@ -1,9 +1,4 @@
 {
     "extends": "./tsconfig.json",
-    "compilerOptions": {
-        "module": "AMD",
-        "moduleResolution": "Node",
-        "outFile": "dist/index.js"
-    },
     "exclude": ["node_modules", "coverage", ".nyc_output", "dist", "src/template", "src/__tests__"]
 }

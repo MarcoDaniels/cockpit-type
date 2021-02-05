@@ -25,7 +25,7 @@ export const plopPrompt = (): PlopGenerator['prompts'] => [
         message: 'Destination File:',
         validate: (path: string, answers: PlopPrompt) => {
             if (!answers) return true // when bypassing prompt no answer is available
-            return plopValidateAnswers(answers)
+            return plopValidateAnswers({ ...answers, path })
         },
     },
     {
