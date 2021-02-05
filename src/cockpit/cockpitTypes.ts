@@ -18,6 +18,7 @@ export type AnyField = BaseField & {
         | 'asset'
         | 'gallery'
         | 'image'
+        | 'wysiwyg'
         | 'any-other' // just for ts to reach default
     options?: never
 }

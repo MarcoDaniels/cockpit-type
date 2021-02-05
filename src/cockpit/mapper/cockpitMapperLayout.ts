@@ -16,7 +16,7 @@ export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: Coc
         case 'markdown':
             return `settings: ${maker.makeObject(`{text: string}`, true)}`
         case 'image':
-            return `settings: ${maker.makeObject(`{image: ${prefix}ImageType}`, true)}`
+            return `settings: ${maker.makeObject(`{image: ${prefix}CPImageBaseType}`, true)}`
         case 'grid':
             return `columns: ${maker.makeMultiple(
                 maker.makeObject(`${prefix}${fieldName}${LayoutChildrenSuffix}`, true),
@@ -28,7 +28,7 @@ export const cockpitMapperLayout = ({ component, fieldName, prefix, maker }: Coc
         case 'heading':
             return `settings: ${maker.makeObject(`{text: string, tag: string}`, true)}`
         case 'gallery':
-            return `settings: ${maker.makeObject(`{gallery: ${prefix}GalleryType[]}`, true)}`
+            return `settings: ${maker.makeObject(`{gallery: ${prefix}CPGalleryBaseType[]}`, true)}`
         case 'divider':
             return `settings: ${maker.makeObject(`{style: string}`, true)}`
         case 'button':

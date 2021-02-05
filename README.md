@@ -33,11 +33,11 @@ example: `cockpit-type typescript path/to/file.ts MyPrefix 'group=My Group'`
 Types are generated using `type` keyword:
 
 ```typescript
-export type ImageType = {
+export type CPImageBaseType = {
     path: string
 }
 
-export type GalleryType = ImageType & {
+export type CPGalleryBaseType = CPImageBaseType & {
     meta: {
         title: string
         asset: string
@@ -55,11 +55,11 @@ import io.circe.Json
 import io.circe.generic.JsonCodec
 
 @JsonCodec
-case class ImageType(path: String)
+case class CPImageBaseType(path: String)
 
 @JsonCodec
-case class MetaType(title: String, asset: String)
+case class CPMetaBaseType(title: String, asset: String)
 
 @JsonCodec
-case class GalleryType(meta: MetaType, path: String)
+case class CPGalleryBaseType(meta: CPMetaBaseType, path: String)
 ```
