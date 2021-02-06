@@ -2,7 +2,7 @@ import { MakeType, MakeTypeEntry, MakeTypeName, MakeUnionType, MakerType } from 
 import * as util from 'util'
 import { PlopPrompt } from '../plop/plopPrompt'
 
-export const makeFormatName = (s: string) => (s.charAt(0).toUpperCase() + s.slice(1)).replace(/ /g, '')
+export const makeFormatName = (s: string): string => (s.charAt(0).toUpperCase() + s.slice(1)).replace(/ /g, '')
 
 export const maker = (language: PlopPrompt['language']): MakerType =>
     <MakerType>{
