@@ -1,6 +1,5 @@
 import { PlopGenerator } from 'plop'
-import { filterByReg } from './plopFilterBy'
-import { plopValidateAnswers } from './plopValidateAnswers'
+import { plopPromptValidate } from './plopPromptValidate'
 
 export type PlopPrompt = {
     language: 'typescript' | 'scala'
@@ -23,27 +22,18 @@ export const plopPrompt = (): PlopGenerator['prompts'] => [
         type: 'input',
         name: 'path',
         message: 'Destination File:',
-        validate: (path: string, answers: PlopPrompt) => {
-            if (!answers) return true // when bypassing prompt no answer is available
-            return plopValidateAnswers({ ...answers, path })
-        },
+        validate: plopPromptValidate.path,
     },
     {
         type: 'input',
         name: 'prefix',
         message: 'Prefix all your types with:',
-        validate: (prefix: string) => {
-            if (/\s/.test(prefix)) return 'Prefix cannot include space.'
-            return true
-        },
+        validate: plopPromptValidate.prefix,
     },
     {
         type: 'input',
         name: 'filter',
         message: 'Filter Types by (filterItem=filterName):',
-        validate: (filter: string) => {
-            if (!filter || filterByReg.test(filter)) return true
-            return 'Please provide one of the following filterItem (collection|singleton|group)'
-        },
+        validate: plopPromptValidate.filter,
     },
 ]

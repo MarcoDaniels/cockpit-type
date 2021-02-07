@@ -4,10 +4,10 @@ import { CockpitSchemaTemplate, cockpitSchemaTemplate } from '../cockpit/cockpit
 import { maker as LanguageMaker } from '../maker/maker'
 import { PlopPrompt } from './plopPrompt'
 import { formatOutput } from '../utils/formatOutput'
-import { plopValidateAnswers } from './plopValidateAnswers'
+import { plopValidateLangFile } from './plopValidateLangFile'
 
 export const plopTransform = async (template: string, answers: PlopPrompt): Promise<string> => {
-    const validation = plopValidateAnswers(answers)
+    const validation = plopValidateLangFile(answers)
     if (typeof validation === 'string') {
         return validation
     }

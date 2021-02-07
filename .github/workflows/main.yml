@@ -18,3 +18,15 @@ jobs:
             - uses: coverallsapp/github-action@master
               with:
                   github-token: ${{ secrets.GITHUB_TOKEN }}
+
+    build:
+        runs-on: ubuntu-latest
+        name: Build
+        needs: [coverage]
+        steps:
+            - uses: actions/checkout@v2
+            - uses: actions/setup-node@v1
+              with:
+                  node-version: 12
+            - run: yarn --frozen-lockfile
+            - run: yarn build
