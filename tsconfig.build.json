@@ -1,4 +1,4 @@
 {
     "extends": "./tsconfig.json",
-    "exclude": ["node_modules", "coverage", ".nyc_output", "dist", "src/template", "src/__tests__"]
+    "exclude": ["node_modules", "coverage", ".nyc_output", "dist", "src/template", "src/**/__tests__/"]
 }

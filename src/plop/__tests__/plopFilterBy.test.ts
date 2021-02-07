@@ -1,5 +1,5 @@
 import test from 'ava'
-import { plopFilterBy } from '../plop/plopFilterBy'
+import { plopFilterBy } from '../plopFilterBy'
 
 test('validate filterBy collection', (t) => {
     const filterBy = plopFilterBy(`collection=My Collection`)

@@ -1,4 +1,4 @@
-export const filterByReg = /(collection|group|singleton)=([^]*)/giu
+export const filterByReg = /(collection|group|singleton)=([^]*)/iu
 
 export type PlopFilterBy = {
     filterBy: 'collection' | 'group' | 'singleton'
