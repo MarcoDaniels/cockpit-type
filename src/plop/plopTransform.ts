@@ -22,6 +22,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
     if (filters) {
         switch (filters.filterBy) {
             case 'collection': {
+                // TODO: next cockpit-http-client will allow type param instead of using `as`
                 const collection = await client.collections.schema(filters.filterName)
                 if (collection.success) {
                     template += cockpitSchemaTemplate(schema)(collection.data as FieldSchema)

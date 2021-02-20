@@ -20,6 +20,7 @@ export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: Map
         case 'file':
         case 'textarea':
         case 'wysiwyg':
+        case 'autourl':
             return { value: maker.makeString() }
         case 'boolean':
             return { value: maker.makeBoolean() }
@@ -73,6 +74,15 @@ export const mapField = ({ baseTypeName, prefix, maker, field, parentName }: Map
             return {
                 value: maker.makeUnionMultiple(fields.map((t) => t.name)),
                 template: fields.map((t) => t.type).join(''),
+            }
+        }
+        case 'set': {
+            const fields = field.options.fields.map((f) => ({
+                [f.name]: mapField({ baseTypeName, prefix, maker, field: f }).value,
+            }))
+
+            return {
+                value: maker.makeObject(Object.assign({}, ...fields)),
             }
         }
         case 'layout':
