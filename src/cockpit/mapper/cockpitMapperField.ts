@@ -1,6 +1,6 @@
 import { Field, layoutComponents } from '../cockpitTypes'
 import { cockpitMapperLayout, LayoutChildrenSuffix } from './cockpitMapperLayout'
-import { CockpitSchemaTemplate } from '../cockpitSchemaTemplate'
+import { CockpitTemplate } from '../cockpitTemplate'
 
 export type MapField = CockpitMapperField & {
     field: Field
@@ -145,7 +145,7 @@ export type CockpitMapperFieldOutput = MapFieldOutput & {
     key: string
 }
 
-export type CockpitMapperField = CockpitSchemaTemplate & {
+export type CockpitMapperField = CockpitTemplate & {
     baseTypeName: string
 }
 
