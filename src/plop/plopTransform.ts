@@ -61,7 +61,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                 const collection = await client.collections.schemas()
                 const singleton = await client.singletons.schemas()
 
-                if (collection.success && singleton.success) {
+                collection.success &&
                     Object.values(collection.data)
                         .filter((d) => d.group && d.group === filters.filterName)
                         .map((data) => cockpitTemplate(schema)(data as FieldSchema))
@@ -73,6 +73,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                             })
                         })
 
+                singleton.success &&
                     Object.values(singleton.data)
                         .filter((d) => d.group && d.group === filters.filterName)
                         .map((data) => cockpitTemplate(schema)(data as FieldSchema))
@@ -83,7 +84,6 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                                 template: syncType,
                             })
                         })
-                }
 
                 template += cockpitSyncType({ syncData: syncDataType, maker, prefix: answers.prefix })
 
@@ -95,7 +95,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
     const collection = await client.collections.schemas()
     const singleton = await client.singletons.schemas()
 
-    if (collection.success && singleton.success) {
+    collection.success &&
         Object.values(collection.data)
             .map((data) => cockpitTemplate(schema)(data as FieldSchema))
             .map(({ accTemplate, syncType }) => {
@@ -106,6 +106,7 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                 })
             })
 
+    singleton.success &&
         Object.values(singleton.data)
             .map((data) => cockpitTemplate(schema)(data as FieldSchema))
             .map(({ accTemplate, syncType }) => {
@@ -115,7 +116,6 @@ export const plopTransform = async (template: string, answers: PlopPrompt): Prom
                     template: syncType,
                 })
             })
-    }
 
     template += cockpitSyncType({ syncData: syncDataType, maker, prefix: answers.prefix })
 
