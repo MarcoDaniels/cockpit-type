@@ -19,6 +19,7 @@ export type AnyField = BaseField & {
         | 'gallery'
         | 'image'
         | 'wysiwyg'
+        | 'autourl'
         | 'any-other' // just for ts to reach default
     options?: never
 }
@@ -54,6 +55,13 @@ export type RepeaterField = BaseField & {
     }
 }
 
+export type SetField = BaseField & {
+    type: 'set'
+    options: {
+        fields: Field[]
+    }
+}
+
 export const layoutComponents = <const>[
     'section',
     'grid',
@@ -80,7 +88,7 @@ export type LayoutField = BaseField & {
     }
 }
 
-export type Field = AnyField | SelectField | CollectionLinkField | RepeaterField | LayoutField
+export type Field = AnyField | SelectField | CollectionLinkField | RepeaterField | SetField | LayoutField
 
 export type FieldSchema = {
     name: string
